@@ -151,8 +151,7 @@ export default function RafaelDiagram() {
               lineHeight: '1.6'
             }}
           >
-            "Se eu tiver um dashboard confiável e fácil, consigo focar em estratégia
-            em vez de ficar montando relatório toda semana."
+            "Quando o cliente tem os dados em uma visualização clara, ele ganha autonomia e toma decisões com mais segurança."
           </p>
         </div>
       </div>
