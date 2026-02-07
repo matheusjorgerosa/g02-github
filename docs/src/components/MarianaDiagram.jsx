@@ -21,11 +21,10 @@ export default function PersonaDiagram() {
       color: '#DC2626',
       icon: '😰',
       content: [
-        'Dificuldade em escolher os melhores pontos da cidade',
-        'Insegurança ao investir parte significativa do orçamento',
-        'Dependência da equipe da Eletromídia para análises',
-        'Tempo perdido tentando entender relatórios técnicos',
-        'Risco de campanhas mal direcionadas'
+        'Dificuldade em escolher os melhores pontos da cidade, pois não há comparação clara entre regiões.',
+        'Insegurança ao investir parte significativa do orçamento sem ter clareza sobre o real potencial de retorno de cada local.',
+        'Dependência da equipe da Eletromídia para análises, o que gera atrasos nas decisões e reduz sua autonomia.',
+        'Risco de campanhas mal direcionadas, atingindo públicos pouco relevantes e reduzindo a efetividade do investimento.'
       ]
     },
     necessidades: {
@@ -33,13 +32,12 @@ export default function PersonaDiagram() {
       color: '#2563EB',
       icon: '🎯',
       content: [
-        'Visualizar dados geográficos em mapas',
-        'Entender fluxo de pessoas por horário',
-        'Analisar público por idade, gênero e classe social',
-        'Comparar diferentes regiões da cidade',
-        'Filtrar dados por período',
-        'Identificar pontos com maior potencial de conversão',
-        'Tomar decisões sem depender de analistas da Eletromídia'
+        'Visualizar dados geográficos em mapas interativos, facilitando a compreensão da distribuição dos pontos pela cidade.',
+        'Entender o fluxo de pessoas por horário, identificando os períodos de maior visibilidade para as campanhas.',
+        'Analisar o perfil do público por idade, gênero e classe social, garantindo alinhamento com o público-alvo.',
+        'Comparar diferentes regiões da cidade de forma rápida, identificando áreas com maior potencial estratégico.',
+        'Identificar pontos com maior potencial de conversão, cruzando localização, fluxo e perfil demográfico.',
+        'Tomar decisões sem depender de analistas da Eletromídia, ganhando mais autonomia e agilidade.'
       ]
     },
     motivacoes: {
@@ -47,12 +45,12 @@ export default function PersonaDiagram() {
       color: '#059669',
       icon: '🚀',
       content: [
-        'Maximizar retorno sobre investimento',
-        'Aumentar vendas da empresa',
-        'Justificar decisões para diretoria',
-        'Ganhar credibilidade interna',
-        'Ser reconhecida como estratégica',
-        'Reduzir desperdício de verba'
+        'Maximizar o retorno sobre investimento, garantindo que cada campanha gere resultados mensuráveis.',
+        'Aumentar as vendas da empresa por meio de campanhas bem direcionadas.',
+        'Justificar decisões para a diretoria com dados claros, visuais e confiáveis.',
+        'Ganhar credibilidade interna como gestora estratégica e orientada por dados.',
+        'Ser reconhecida como uma profissional capaz de transformar informações em resultados.',
+        'Reduzir o desperdício de verba em campanhas pouco eficientes.'
       ]
     },
     desafios: {
@@ -60,10 +58,10 @@ export default function PersonaDiagram() {
       color: '#D97706',
       icon: '⚠️',
       content: [
-        'Cruzar localização com perfil demográfico',
-        'Tomar decisões rápidas com pouco tempo',
-        'Conciliar estratégia com limitações financeiras',
-        'Competir com empresas maiores'
+        'Cruzar dados de localização com perfil demográfico de forma eficiente.',
+        'Tomar decisões rápidas.',
+        'Conciliar estratégias de campanhas com limitações financeiras.',
+        'Competir com empresas maiores, que possuem mais recursos.'
       ]
     },
     desejos: {
@@ -71,12 +69,11 @@ export default function PersonaDiagram() {
       color: '#7C3AED',
       icon: '✨',
       content: [
-        'Mapa interativo por localização',
-        'Heatmap por horário e público',
-        'Indicadores automáticos de melhor ponto',
-        'Sugestões visuais de investimento',
-        'Relatórios prontos para apresentação',
-        'Poucos cliques para gerar insights'
+        'Ter acesso a um mapa interativo por localização, facilitando a visualização dos pontos de mídia.',
+        'Utilizar heatmaps por horário e perfil de público para identificar padrões de circulação.',
+        'Contar com indicadores automáticos que apontem os melhores pontos para investimento.',
+        'Receber sugestões visuais de investimento baseadas nos dados disponíveis.',
+        'Obter insights relevantes em poucos cliques, sem precisar de suporte técnico.'
       ]
     }
   };

@@ -22,10 +22,10 @@ export default function RafaelDiagram() {
       color: '#DC2626',
       icon: '😰',
       content: [
-        'Precisa responder clientes em tempo real sobre melhores pontos',
-        'Monta análises manualmente em planilhas',
-        'Pressão constante do time comercial',
-        'Dificuldade em escalar o atendimento'
+        'Precisa responder clientes em tempo real sobre os melhores pontos da cidade.',
+        'Monta análises manualmente em planilhas, gastando tempo com consolidação de dados em vez de focar no relacionamento com o cliente.',
+        'Sofre pressão constante do time comercial por respostas rápidas que ajudem a fechar contratos.',
+        'Dificuldade em escalar o atendimento, pois cada nova demanda exige esforço manual e personalizado.'
       ]
     },
     necessidades: {
@@ -33,12 +33,12 @@ export default function RafaelDiagram() {
       color: '#2563EB',
       icon: '🎯',
       content: [
-        'Dashboard integrado à plataforma comercial',
-        'Acesso rápido a mapas geográficos',
-        'Filtros por horário, região e público',
-        'Visualização automática do target',
-        'Indicadores prontos para explicar ao cliente',
-        'Dados confiáveis e atualizados'
+        'Ter um dashboard integrado à plataforma comercial, centralizando todas as informações relevantes.',
+        'Acesso rápido a mapas geográficos para demonstrar visualmente o potencial de cada ponto.',
+        'Filtros por horário, região e perfil de público, permitindo análises personalizadas.',
+        'Visualização automática do target, facilitando a explicação do perfil do público ao cliente.',
+        'Indicadores prontos para explicar ao cliente, reduzindo a necessidade de análises manuais.',
+        'Dados confiáveis e atualizados, garantindo segurança nas recomendações.'
       ]
     },
     motivacoes: {
@@ -46,11 +46,11 @@ export default function RafaelDiagram() {
       color: '#059669',
       icon: '🚀',
       content: [
-        'Ajudar clientes a tomarem decisões melhores',
-        'Aumentar satisfação e retenção',
-        'Reduzir trabalho operacional',
-        'Fortalecer relação com o time comercial',
-        'Entregar valor rapidamente'
+        'Ajudar clientes a tomarem decisões melhores com base em dados claros e objetivos.',
+        'Aumentar a satisfação e a retenção dos clientes por meio de um atendimento mais qualificado.',
+        'Reduzir o trabalho operacional repetitivo, ganhando mais tempo para atividades estratégicas.',
+        'Fortalecer a relação com o time comercial, contribuindo diretamente para o fechamento de contratos.',
+        'Entregar valor rapidamente, demonstrando eficiência e profissionalismo.'
       ]
     },
     desafios: {
@@ -58,10 +58,10 @@ export default function RafaelDiagram() {
       color: '#D97706',
       icon: '⚠️',
       content: [
-        'Atender vários clientes ao mesmo tempo',
-        'Explicar dados complexos para leigos',
-        'Conciliar demandas técnicas e comerciais',
-        'Evitar erros que prejudiquem contratos'
+        'Atender vários clientes ao mesmo tempo sem comprometer a qualidade das análises.',
+        'Explicar dados complexos para clientes leigos de forma simples e acessível.',
+        'Conciliar demandas técnicas com necessidades comerciais, equilibrando precisão e agilidade.',
+        'Evitar erros em análises e recomendações que possam comprometer contratos e relacionamentos.'
       ]
     },
     desejos: {
@@ -69,11 +69,11 @@ export default function RafaelDiagram() {
       color: '#7C3AED',
       icon: '✨',
       content: [
-        'Dashboard intuitivo para os clientes',
-        'Dados visuais e autoexplicativos',
-        'Mapas prontos',
-        'Menos tarefas manuais',
-        'Autonomia no atendimento'
+        'Disponibilizar um dashboard intuitivo para os clientes, reduzindo a dependência direta do suporte.',
+        'Trabalhar com dados visuais e autoexplicativos, facilitando apresentações e reuniões.',
+        'Ter mapas prontos para uso imediato em negociações comerciais.',
+        'Reduzir drasticamente as tarefas manuais.',
+        'Ter mais autonomia no atendimento, atuando de forma mais estratégica.'
       ]
     }
   };
@@ -170,9 +170,7 @@ export default function RafaelDiagram() {
         <p style={{ color: '#4B5563', lineHeight: '1.7', margin: 0 }}>
           Rafael trabalha diretamente com equipes de vendas, atendimento e clientes
           estratégicos da Eletromidia. Seu papel é transformar dados de fluxo em valor comercial, ajudando
-          os gerentes de marketing a entenderem o impacto das campanhas. Ele
-          domina planilhas, BI e ferramentas internas. Muitas vezes vira o "tradutor" entre o
-          time técnico, o comercial e o cliente.
+          os gerentes de marketing a entenderem o impacto das campanhas.
         </p>
       </div>
 
