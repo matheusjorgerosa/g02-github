@@ -28,7 +28,7 @@ Para melhor compreensão dos requisitos, eles foram separados nos seguintes ator
 | RF-04 | O sistema deve persistir os dados validados em um Data Lake, preservando o histórico.| Alta| Os dados devem estar acessíveis para leitura no diretório correto do Data Lake após a ingestão.| Planejado |
 | RF-05 | O sistema deve transformar os dados do Data Lake, normalizando-os para um modelo relacional estruturado.| Alta| A transformação deve converter corretamente tipos de dados (ex: string para datetime).| Planejado |
 | RF-06 | O sistema deve carregar os dados transformados no Banco de Dados Relacional para consumo do dashboard sem perdas de dados.| Alta       | A contagem de registros no banco deve bater com a contagem do Data Lake.              | Planejado |
-| RF-07 | O sistema deve suportar a ingestãore corrente de novos dados integrando-as ao histórico existente.| Média      | Novos dados devem ser adicionados (append) sem sobrescrever o histórico anterior.              | Planejado |
+| RF-07 | O sistema deve suportar a ingestão recorrente de novos dados integrando-os ao histórico existente.| Média      | Novos dados devem ser adicionados (append) sem sobrescrever o histórico anterior.| Planejado |
 | RF-08 | O sistema deve suportar a ingestão massiva de dados fornecidos pela API da Claro sem que haja queda do sistema.| Alta       | O sistema deve ser projetado para suportar volumes massivos de dados na casa dos vários MB/s.           | Planejado |
 | **Visualização e Analytics** |
 | RF-09 | O sistema deve exibir os dados em um mapa interativo.| Alta       | Os pontos devem aparecer na localização geográfica correta conforme coordenadas do banco.| Planejado |
