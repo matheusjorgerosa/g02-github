@@ -6,7 +6,7 @@
 
 <div style={{margin: 25}}>
     <div style={{textAlign: 'center'}}>
-        <img src={require("../../../static/img/docs/M09CanvasPropostaDeValor.png").default} style={{width: 800}} alt="Canva Proposta de valor" />
+        <img src={require("../../../static/img/M09CanvasPropostaDeValor.png").default} style={{width: 800}} alt="Canva Proposta de valor" />
         <br />
     </div>
 </div>
