@@ -8,8 +8,8 @@ import { themes as prismThemes } from "prism-react-renderer"
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "Docs - g02",
-  tagline: "Um dia a gente cria uma tagline massa ... 🤷",
+  title: "Documentação do Projeto",
+  tagline: "T12 - Engenharia da Computação - Inteli / TODO: COLOCAR ALGO MELHOR AQUI",
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
@@ -20,7 +20,7 @@ const config = {
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
-  organizationName: "g02", // Usually your GitHub org/user name.
+  organizationName: "Grupo do Café da Sophia", // Usually your GitHub org/user name.
   projectName: "g02", // Usually your repo name.
 
   onBrokenLinks: "warn",
@@ -83,10 +83,10 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       navbar: {
-        title: "g02",
+        title: "Grupo do Café da Sophia",
         logo: {
           // alt: "g02 Logo",
-          src: "img/logo.svg",
+          src: "img/logo_grupo.png",
         },
         items: [
           {
