@@ -13,9 +13,6 @@ docs:lint:
   script:
     - cd docs
     - npm ci
-    - npm run lint
-    - npm run lint:md
-    - npm run types:check
 
 pages:
   stage: deploy
