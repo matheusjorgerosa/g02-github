@@ -1,0 +1,35 @@
+docs:lint:
+  stage: test
+  image: node:20-alpine
+  extends:
+    - .actions-rules:docs
+  cache:
+    key:
+      files:
+        - docs/package-lock.json
+    paths:
+      - .npm/
+      - docs/.next/cache/
+  script:
+    - cd docs
+    - npm ci
+
+pages:
+  stage: deploy
+  image: node:20-alpine
+  extends:
+    - .actions-rules:docs:deploy
+  cache:
+    key:
+      files:
+        - docs/package-lock.json
+    paths:
+      - .npm/
+  script:
+    - cd docs
+    - npm ci
+    - npm run build
+    - mv out ../public
+  artifacts:
+    paths:
+      - public
