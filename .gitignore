@@ -22,3 +22,4 @@ yarn-error.log*
 
 src/mock_api_claro/data/fluxo_diario_20260106.csv
 venv
+__pycache__
