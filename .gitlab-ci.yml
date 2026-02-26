@@ -5,5 +5,7 @@ stages:
   # more stages
 
 include:
+  - local: ".gitlab/ci/actions-rules.yml"
+  - local: ".gitlab/ci/pipeline-check.yml"
   - local: ".gitlab/ci/docs.yml"
   # more component pipelines
