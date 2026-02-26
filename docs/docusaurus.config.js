@@ -13,10 +13,10 @@ const config = {
   favicon: "img/favicon.ico",
 
   // Set the production url of your site here
-  url: "https://caio-alcantara.github.io",
+  url: "https://git.inteli.edu.br",
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: "/documentacao-m09-g02/",
+  baseUrl: "/graduacao/2026-1a/t12/g02/",
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
