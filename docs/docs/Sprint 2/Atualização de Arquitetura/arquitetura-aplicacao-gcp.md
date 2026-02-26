@@ -468,15 +468,6 @@ graph TB
 - **HTTPS:** Certificados SSL/TLS gratuitos via Google-managed certificates
 - **Custo:** US$ 0,08 por GB de transferência (América do Sul) - cache egress mais barato
 
-**Capacidade:**
-- Throughput: Automaticamente escalável sem limites
-- Cache TTL: Configurável por tipo de conteúdo
-- Invalidação de cache: Via API ou Console (até 10.000 invalidações/dia grátis)
-
-**Impacto:**
-- Redução de latência: 50-90% para usuários distantes
-- Redução de carga no origin: 70-90% das requisições atendidas pelo cache
-
 #### 2.3.3 Cloud Load Balancer (Global HTTP/S)
 
 **Função:** Distribui requisições HTTP/HTTPS entre múltiplas instâncias GCE backend e frontend.
@@ -497,10 +488,6 @@ graph TB
 - Backends: Suporta milhares de backends
 - Latência adicional: Tipicamente 1-3ms
 
-**Monitoramento:**
-- Integração com Cloud Monitoring para métricas de latência, 4xx, 5xx
-- Cloud Logging para access logs detalhados
-
 #### 2.3.4 Managed Instance Groups (Backend e Frontend)
 
 **Função:** Gerencia automaticamente o número de instâncias GCE baseado em métricas de carga.
@@ -518,12 +505,6 @@ graph TB
 - **Desejado:** 2-4 instâncias (operação normal)
 - **Máximo:** 10+ instâncias (picos de carga)
 
-**Métricas de scaling:**
-- CPU Utilization: Escala quando > 70%
-- Requisições por segundo: Quando > 1000 req/min por instância
-- Latência: Quando > 500ms
-- Métricas customizadas: Via Cloud Monitoring
-
 #### 2.3.5 GCE Backend (Java Spring Boot - API REST)
 
 **Função:** Servidores de aplicação que processam a lógica de negócio e servem a API REST.
@@ -535,21 +516,6 @@ graph TB
 - **Stateless:** Instâncias não mantêm estado, facilitando scaling
 - **Container-native:** Pode migrar facilmente para Cloud Run ou GKE no futuro
 
-**Tipo de instância sugerido:**
-- **e2-medium** (2 vCPU, 4GB RAM): Para cargas moderadas - US$ 0,0335/hora
-- **c2-standard-4** (4 vCPU, 16GB RAM): Para cargas CPU-intensive - US$ 0,167/hora
-- **n2-standard-2** (2 vCPU, 8GB RAM): Para cargas balanceadas - US$ 0,097/hora
-
-**Capacidade estimada por instância:**
-- Requisições por segundo: 100-500 rps (depende da complexidade das queries)
-- Conexões simultâneas: 200-500
-- Throughput: 10-50 MB/s
-
-**Otimizações:**
-- Connection pooling para banco de dados (HikariCP)
-- Cache local (Caffeine/Guava) para dados frequentes
-- Async processing para operações pesadas
-- Tuning de JVM (heap size, GC)
 
 #### 2.3.6 GCE Frontend (React/Vue - Dashboard)
 
@@ -561,10 +527,6 @@ graph TB
 - **State management:** Redux/Vuex para gerenciamento de estado complexo
 - **Visualização de dados:** Bibliotecas como D3.js, Chart.js para gráficos
 - **Maps:** Integração com Google Maps Platform para visualização geográfica
-
-**Tipo de instância sugerido:**
-- **e2-small** (2 vCPU, 2GB RAM): US$ 0,0168/hora
-- Serve principalmente arquivos estáticos pré-compilados
 
 **Alternativa Serverless (Recomendada):**
 O frontend pode ser hospedado apenas no Cloud Storage + Cloud CDN, reduzindo custos e complexidade significativamente. Esta é uma **otimização fortemente recomendada**.
@@ -591,27 +553,6 @@ Custo: ~US$ 0,026/GB storage + US$ 0,08/GB transfer
 - **Segurança:** Encryption at rest e in transit, Private IP
 - **Custo:** US$ 0,017/hora para db-f1-micro (shared vCPU, 0.6GB RAM)
 
-**Tipo de instância sugerido:**
-- **db-n1-standard-2** (2 vCPU, 7.5GB RAM): US$ 0,129/hora
-- **db-n1-highmem-4** (4 vCPU, 26GB RAM): US$ 0,350/hora (memory-optimized)
-
-**Capacidade:**
-- IOPS: 15.000-60.000 IOPS (SSD)
-- Storage: Até 64TB
-- Conexões: 4.000 conexões máximas
-- Throughput: Até 2.4 Gbps
-
-**Read Replicas:**
-- Até 10 read replicas por instância primária
-- Cross-region replicas para disaster recovery
-- Podem ser promovidas a primária em caso de falha
-
-**Otimizações:**
-- Índices otimizados para queries frequentes
-- Particionamento de tabelas grandes
-- PgBouncer para connection pooling
-- Query insights para análise de performance
-
 #### 2.3.8 Memorystore for Redis
 
 **Função:** Cache distribuído em memória para reduzir latência e carga no banco de dados.
@@ -625,31 +566,11 @@ Custo: ~US$ 0,026/GB storage + US$ 0,08/GB transfer
 - **Private IP:** Acesso apenas via VPC (segurança)
 - **Custo:** US$ 0,049/hora para Basic Tier (1GB)
 
-**Tipo de instância sugerido:**
-- **Basic, 5GB:** US$ 0,049 × 5 = US$ 0,245/hora
-- **Standard, 5GB (HA):** US$ 0,098 × 5 = US$ 0,490/hora
-
-**Capacidade:**
-- **Operações por segundo:** Até **1 milhão de ops/segundo** por instância
-- Network throughput: Até 12 Gbps
-- Tamanho máximo: 300GB por instância
-
-**Estratégias de cache:**
-- **Cache-aside:** Aplicação verifica cache primeiro, depois banco
-- **Write-through:** Escreve no cache e banco simultaneamente
-- **TTL:** 5-60 minutos dependendo da volatilidade dos dados
-- **Eviction policy:** LRU (Least Recently Used)
-
 **Dados cacheados:**
 - Resultados de queries complexas
 - Dados de sessão de usuários
 - Agregações e métricas pré-calculadas
 - Configurações da aplicação
-
-**Impacto:**
-- Redução de latência: 100-1000x (de 100ms para < 1ms)
-- Redução de carga no Cloud SQL: 80-95%
-- Aumento de throughput: 10-100x
 
 #### 2.3.9 Dataflow / Cloud Run Jobs (Worker ETL)
 
@@ -684,10 +605,6 @@ Custo: ~US$ 0,026/GB storage + US$ 0,08/GB transfer
 - **Flexibilidade:** Pode acionar HTTP endpoints, Pub/Sub ou Cloud Functions
 - **Confiabilidade:** Retry automático em caso de falhas
 - **Custo:** US$ 0,10 por job/mês (3 jobs gratuitos)
-
-**Configuração típica:**
-- Execução a cada hora: `0 * * * *`
-- Execução a cada 15 minutos: `*/15 * * * *`
 
 ### 2.4 Fluxo de Requisições
 
