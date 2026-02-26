@@ -93,38 +93,38 @@ graph TB
     CLARO["🔴 API Claro<br/><br/>Envia batch de dados<br/>periodicamente"]:::external
 
     %% VPC Container
-    subgraph VPC["☁️ VPC Network"]
+    subgraph VPC["VPC Network"]
         direction TB
 
         %% Camada de Entrada
-        API["📡 Cloud Endpoints<br/>+ Load Balancer<br/><br/>Recebe requests e<br/>encaminha para Pub/Sub"]:::gcpBlue
+        API["Cloud Endpoints<br/>+ Load Balancer<br/><br/>Recebe requests e<br/>encaminha para Pub/Sub"]:::gcpBlue
 
         %% Camada de Processamento
-        PUBSUB["📬 Cloud Pub/Sub<br/><br/>Mensageria assíncrona<br/>com push delivery"]:::gcpBlue
+        PUBSUB["Cloud Pub/Sub<br/><br/>Mensageria assíncrona<br/>com push delivery"]:::gcpBlue
 
         FUNCTIONS["⚡ Cloud Functions<br/>2ª Geração<br/><br/>Consome dados via Eventarc,<br/>processa em lotes e<br/>armazena no datalake"]:::gcpBlue
 
         %% Camada de Armazenamento
-        subgraph GCS_LAYER["📦 Cloud Storage"]
+        subgraph GCS_LAYER["Cloud Storage"]
             direction TB
             GCS["☁️ GCS Bucket"]:::gcpGreen
 
-            subgraph DATALAKE["🗄️ Datalake - Camada RAW"]
+            subgraph DATALAKE["Datalake - Camada RAW"]
                 direction LR
-                ICEBERG["❄️ Apache Iceberg<br/>via BigLake<br/><br/>Dados não processados"]:::iceberg
-                TABLE["📊 Tabela<br/>┌──────────┬────────┐<br/>│ PK, FK1  │ Row 1  │<br/>│ PK, FK2  │ Row 2  │<br/>│          │ Row 3  │<br/>│          │ Row 4  │<br/>└──────────┴────────┘"]:::iceberg
+                ICEBERG["Apache Iceberg<br/>via BigLake<br/><br/>Dados não processados"]:::iceberg
+                TABLE["Tabela<br/>┌──────────┬────────┐<br/>│ PK, FK1  │ Row 1  │<br/>│ PK, FK2  │ Row 2  │<br/>│          │ Row 3  │<br/>│          │ Row 4  │<br/>└──────────┴────────┘"]:::iceberg
             end
         end
 
         %% Worker
-        WORKER["⚙️ Dataflow<br/>ou Cloud Run Jobs<br/><br/>Processa dados do lake<br/>periodicamente e faz<br/>ingestão para banco<br/>relacional (DW)"]:::worker
+        WORKER["Dataflow<br/>ou Cloud Run Jobs<br/><br/>Processa dados do lake<br/>periodicamente e faz<br/>ingestão para banco<br/>relacional (DW)"]:::worker
     end
 
     %% Banco de Destino
-    DB[("💾 Cloud SQL<br/>PostgreSQL<br/><br/>Dados processados<br/>e estruturados")]:::gcpYellow
+    DB[("Cloud SQL<br/>PostgreSQL<br/><br/>Dados processados<br/>e estruturados")]:::gcpYellow
 
     %% BigQuery para Analytics
-    BQ[("📊 BigQuery<br/><br/>Analytics direto<br/>sobre Iceberg")]:::gcpBlue
+    BQ[("BigQuery<br/><br/>Analytics direto<br/>sobre Iceberg")]:::gcpBlue
 
     %% Fluxos
     CLARO -->|"HTTP POST<br/>Batch de dados"| API
@@ -146,8 +146,8 @@ graph TB
   <p><strong>Figura 1 - Arquitetura de ingestão de dados (GCP)</strong></p>
   <img
     src={useBaseUrl('/img/arquitetura_ingestao_gcp.png')}
-    alt="Arquitetura de ingestão de dados GCP"
-    title="Arquitetura de ingestão de dados GCP"
+    alt="Arquitetura de ingestão de dados ambiente GCP"
+    title="Arquitetura de ingestão de dados ambiente GCP"
     style={{ maxWidth: '80%', height: 'auto' }}
   />
   <p>Fonte: Elaborado pelo grupo Café da Sophia (2026)</p>
@@ -370,7 +370,7 @@ graph TB
     end
 
     subgraph "Usuários"
-        USER[👤 Usuários]
+        USER[Usuários]
     end
 
     GCS[(Cloud Storage<br/>Bucket de Dados)]
