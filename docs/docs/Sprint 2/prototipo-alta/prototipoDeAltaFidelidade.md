@@ -7,7 +7,7 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 
 # Protótipo de Alta Fidelidade
 
-<strong>Link para o Figma:</strong> 
+<strong>Link para o Figma:</strong> https://www.figma.com/design/uNfjpekxwn3LItT3kl8jGv/Prot%C3%B3tipo-de-alta-fidelidade?node-id=0-1&t=Omf12hkr1uNGKtI0-1
 
 Durante a Sprint 1, desenvolvemos um wireframe de baixa fidelidade para validar os fluxos principais da plataforma, como cadastro de campanhas, seleção de locais e visualização de dados. Com base nesse aprendizado, evoluímos para um protótipo de alta fidelidade, detalhando as interações, elementos visuais e fluxos completos do sistema, aproximando-se da experiência final do usuário.
 
