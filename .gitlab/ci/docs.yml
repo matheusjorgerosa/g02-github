@@ -29,7 +29,7 @@ pages:
     - cd docs
     - npm ci
     - npm run build
-    - mv out ../public
+    - mv build ../public
   artifacts:
     paths:
       - public
