@@ -225,7 +225,7 @@ graph TB
 - **Durabilidade:** 99.999999999% (11 noves) de durabilidade
 - **Disponibilidade:** 99.99% de disponibilidade (Standard)
 - **Escalabilidade ilimitada:** Pode armazenar quantidades ilimitadas de dados
-- **Custo:** US$ 0,020 por GB/mês (Standard) - **13% mais barato que S3**
+- **Custo:** US$ 0,020 por GB/mês (Standard)
 - **Performance:** Suporta **5.000 requisições de PUT/COPY/POST/DELETE** e **8.000 requisições GET/HEAD por segundo por prefixo**
 - **Classes de storage:** Standard, Nearline, Coldline, Archive (lifecycle automático)
 
