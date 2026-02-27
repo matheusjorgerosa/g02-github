@@ -28,7 +28,7 @@ sidebar_position: 2
 
 ## 2.3 Integridade e Segredos
 
-**Criptografia TLS 1.2+**: Uso obrigatório de HTTPS para o GET na API da Claro e comunicação interna entre os serviços GCP.
+**Criptografia TLS 1.2+**: Uso obrigatório de HTTPS para o GET e o POST na API da Claro e comunicação interna entre os serviços GCP.
 
 **Secret Management:** Armazenamento de chaves de API e certificados no Secret Manager, protegidos por chaves criptográficas gerenciadas no Cloud KMS.
 
