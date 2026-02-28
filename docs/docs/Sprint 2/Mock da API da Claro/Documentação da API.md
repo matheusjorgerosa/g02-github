@@ -39,7 +39,7 @@ docker run -p 8080:8080 mock-api-claro
 
 - A API está hospedada no Google Cloud Run e já está disponível publicamente.
 
-**URL:** https://mock-api-claro-77967296031.us-central1.run.app
+**URL:** https://mock-api-claro-470119945271.us-central1.run.app
 
 > Para instruções de como realizar um novo deploy, consulte o **[guia de deploy](./Guia%20de%20Deploy.md)**.
 
@@ -54,7 +54,7 @@ Segue a documentação atualizada considerando suporte a paginação via query p
 **URL completa:**
 
 ```
-GET https://mock-api-claro-77967296031.us-central1.run.app/mock-api-claro
+GET https://mock-api-claro-470119945271.us-central1.run.app/mock-api-claro
 ```
 
 #### Parâmetros (Query Params)
