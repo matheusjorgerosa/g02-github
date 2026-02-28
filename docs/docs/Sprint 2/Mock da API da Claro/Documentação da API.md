@@ -30,10 +30,10 @@ src/mock-api-claro/
 docker build -t mock-api-claro .
 
 # 2. Rodar o container
-docker run -p 8000:8000 mock-api-claro
+docker run -p 8080:8080 mock-api-claro
 ```
 
-> A API ficará disponível em: `http://localhost:8000`
+> A API ficará disponível em: `http://localhost:8080`
 
 ## Deploy
 
@@ -43,18 +43,45 @@ docker run -p 8000:8000 mock-api-claro
 
 > Para instruções de como realizar um novo deploy, consulte o **[guia de deploy](./Guia%20de%20Deploy.md)**.
 
+Segue a documentação atualizada considerando suporte a paginação via query params:
+
+---
+
 ## Referência da API
 
 ### `GET /mock-api-claro`
 
 **URL completa:**
+
 ```
 GET https://mock-api-claro-77967296031.us-central1.run.app/mock-api-claro
 ```
 
-**Autenticação:** Não requerida
+#### Parâmetros (Query Params)
 
-**Parâmetros:** Nenhum
+| Parâmetro   | Tipo | Obrigatório | Descrição                           |
+| ----------- | ---- | ----------- | ----------------------------------- |
+| `page_num`  | int  | Não         | Número da página (começa em 1).     |
+| `page_size` | int  | Não         | Quantidade de registros por página. |
+
+##### Regras:
+
+* Se **nenhum parâmetro** for enviado, retornam-se todos os registros.
+* Se ambos forem enviados, aplica-se paginação nos conjuntos:
+
+  * `impressions_by_hour`
+  * `uniques_by_age_and_gender`
+  * `uniques_by_social_class`
+
+##### Exemplo com paginação
+
+```
+GET /mock-api-claro?page_num=1&page_size=10
+```
+
+* `num_records` representa o **total de registros antes da paginação**.
+* A paginação é aplicada **após agregações**.
+* `impressions` e `unique_devices` não são paginados, pois retornam apenas um registro agregado.
 
 ### Estrutura da Resposta
 
