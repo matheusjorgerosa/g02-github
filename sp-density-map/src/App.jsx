@@ -3,49 +3,51 @@ import DeckGL from '@deck.gl/react';
 import { HexagonLayer } from 'deck.gl';
 import { Map } from 'react-map-gl/maplibre';
 import Papa from 'papaparse';
+import { 
+  XAxis, Tooltip, ResponsiveContainer,
+  BarChart, Bar, PieChart, Pie, AreaChart, Area, Cell, YAxis
+} from 'recharts';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import FilterPanel from './components/FilterPanel';
+import './Dashboard.css';
 
-// Constants
-const ALL_AGES = ['18-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80+'];
-const ALL_GENDERS = ['F', 'M'];
-const ALL_CLASSES = ['A', 'B1', 'B2', 'C1', 'C2', 'DE'];
+// Icons
+const Icons = {
+  Dashboard: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>,
+  Campaign: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20V10"></path><path d="M18 20V4"></path><path d="M6 20v-4"></path></svg>,
+  Settings: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>,
+  Logout: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>,
+  Expand: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>,
+  Minimize: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 14h6m0 0v6m0-6l-7 7m17-7h-6m0 0v6m0-6l7 7M20 10h-6m0 0V4m0 6l7-7M4 10h6m0 0V4m0 6l-7-7"></path></svg>
+};
+
+const FILTER_CONFIG = {
+  idade: ['18-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80+'],
+  genero: [{ id: 'M', label: 'Masculino' }, { id: 'F', label: 'Feminino' }],
+  classe_social: ['A', 'B1', 'B2', 'C1', 'C2', 'DE'],
+  horario: Array.from({length: 24}, (_, i) => i)
+};
+
+const INITIAL_FILTERS = {
+  idade: [...FILTER_CONFIG.idade],
+  genero: ['M', 'F'],
+  classe_social: [...FILTER_CONFIG.classe_social],
+  horario: [...FILTER_CONFIG.horario]
+};
 
 const INITIAL_VIEW_STATE = {
   longitude: -46.6333,
   latitude: -23.5505,
   zoom: 11,
-  minZoom: 5,
-  maxZoom: 16,
   pitch: 45,
   bearing: 0
 };
 
-// Start empty
-const INITIAL_FILTERS = {
-  idade: [],
-  genero: [],
-  classe_social: []
-};
-
-const tooltipStyle = {
-  position: 'absolute',
-  zIndex: 1,
-  pointerEvents: 'none',
-  backgroundColor: '#1f2937',
-  color: '#f3f4f6',
-  padding: '8px 12px',
-  borderRadius: '4px',
-  fontSize: '12px',
-  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-  fontFamily: 'system-ui, sans-serif'
-};
+const formatNumber = (val) => Math.floor(val).toLocaleString('pt-BR');
 
 const parseTarget = (str) => {
   if (!str) return null;
   try {
-    const jsonStr = str.replace(/'/g, '"');
-    return JSON.parse(jsonStr);
+    return JSON.parse(str.replace(/'/g, '"'));
   } catch (e) {
     return null;
   }
@@ -56,7 +58,8 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [filters, setFilters] = useState(INITIAL_FILTERS);
-  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isMapExpanded, setIsMapExpanded] = useState(false);
+  const [onlyRelevant, setOnlyRelevant] = useState(false);
 
   useEffect(() => {
     Papa.parse('/data.csv', {
@@ -65,71 +68,108 @@ function App() {
       skipEmptyLines: true,
       complete: (results) => {
         const validData = results.data
-          .filter(d => d.longitude && d.latitude && !isNaN(Number(d.longitude)))
+          .filter(d => d.longitude && d.latitude)
           .map(d => ({
             ...d,
             coordinates: [Number(d.longitude), Number(d.latitude)],
             uniques: Number(d.uniques) || 0,
+            hour: parseInt(d.impression_hour) || 0,
             targetObj: parseTarget(d.target)
           }));
         setData(validData);
-        setLoading(false);
-      },
-      error: (error) => {
-        console.error('Error parsing CSV:', error);
         setLoading(false);
       }
     });
   }, []);
 
-  const filteredData = useMemo(() => {
-    if (!data.length) return [];
+  const { filteredData, stats } = useMemo(() => {
+    if (!data.length) return { 
+      filteredData: [], 
+      stats: { totalImpressions: 0, hourlyChartData: [], peakHour: '00:00', categoryStats: { genero: {F:0, M:0}, idade: {}, classe: {} }, topBairros: [] } 
+    };
 
-    // Determine active filters
-    const activeAges = filters.idade;
-    const activeGenders = filters.genero;
-    const activeClasses = filters.classe_social;
+    const activeHours = new Set(filters.horario);
+    const activeGens = new Set(filters.genero);
+    const activeClasses = new Set(filters.classe_social);
+    const activeAges = new Set(filters.idade);
 
-    return data.map(d => {
-      let multiplier = 0;
+    let totalImpressions = 0;
+    const hourlyFullMap = Array(24).fill(0);
+    const categoryStats = { 
+      genero: { F: 0, M: 0 }, 
+      idade: Object.fromEntries(FILTER_CONFIG.idade.map(k => [k, 0])), 
+      classe: Object.fromEntries(FILTER_CONFIG.classe_social.map(k => [k, 0])) 
+    };
+    const bairroMap = {};
+    const mapItems = [];
 
-      if (d.targetObj) {
-        // 1. Calculate % of selected Ages
-        let agePct = 0;
-        activeAges.forEach(age => {
-          if (d.targetObj.idade && d.targetObj.idade[age]) {
-            agePct += d.targetObj.idade[age];
-          }
+    // Threshold for 'relevancy' - points with very low impact relative to average
+    const relevancyThreshold = onlyRelevant ? 150 : 0; 
+
+    data.forEach(d => {
+      if (!d.targetObj) return;
+
+      const ageMult = filters.idade.reduce((s, v) => s + (d.targetObj.idade?.[v] || 0), 0);
+      const genMult = filters.genero.reduce((s, v) => s + (d.targetObj.genero?.[v] || 0), 0);
+      const clsMult = filters.classe_social.reduce((s, v) => s + (d.targetObj.classe_social?.[v] || 0), 0);
+      
+      const multiplier = ageMult * genMult * clsMult;
+      const baseVal = d.uniques * multiplier;
+
+      if (baseVal > relevancyThreshold) {
+        hourlyFullMap[d.hour] += baseVal;
+        
+        const baseForClass = d.uniques * ageMult * genMult;
+        Object.entries(d.targetObj.classe_social || {}).forEach(([k, v]) => {
+          if (activeClasses.has(k)) categoryStats.classe[k] += (baseForClass * v);
         });
 
-        // 2. Calculate % of selected Genders
-        let genderPct = 0;
-        activeGenders.forEach(gen => {
-          if (d.targetObj.genero && d.targetObj.genero[gen]) {
-            genderPct += d.targetObj.genero[gen];
-          }
+        const baseForGen = d.uniques * ageMult * clsMult;
+        Object.entries(d.targetObj.genero || {}).forEach(([k, v]) => {
+          if (activeGens.has(k)) categoryStats.genero[k] += (baseForGen * v);
         });
 
-        // 3. Calculate % of selected Classes
-        let classPct = 0;
-        activeClasses.forEach(cls => {
-          if (d.targetObj.classe_social && d.targetObj.classe_social[cls]) {
-            classPct += d.targetObj.classe_social[cls];
-          }
+        const baseForAge = d.uniques * genMult * clsMult;
+        Object.entries(d.targetObj.idade || {}).forEach(([k, v]) => {
+          if (activeAges.has(k)) categoryStats.idade[k] += (baseForAge * v);
         });
 
-        // The user requested an additive logic across all selections (Union / "manter e somar").
-        // Instead of multiplying probabilities (Intersection), we sum them and cap at 1.0 (100%).
-        const combinedPct = agePct + genderPct + classPct;
-        multiplier = Math.min(1.0, combinedPct);
+        if (activeHours.has(d.hour)) {
+          totalImpressions += baseVal;
+          mapItems.push({ ...d, displayValue: baseVal });
+          
+          const bairro = d.endereco || 'Outros';
+          bairroMap[bairro] = (bairroMap[bairro] || 0) + baseVal;
+        }
       }
+    });
 
-      return {
-        ...d,
-        displayValue: d.uniques * multiplier
-      };
-    }).filter(d => d.displayValue > 0);
+    const hourlyChartData = hourlyFullMap.map((v, i) => ({ hour: `${i}h`, value: Math.floor(v) }));
+    const peakHour = hourlyFullMap.indexOf(Math.max(...hourlyFullMap));
+    const topBairros = Object.entries(bairroMap)
+      .map(([name, value]) => ({ name: name.substring(0, 20), value: Math.floor(value) }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 5);
+
+    return { 
+      filteredData: mapItems, 
+      stats: { 
+        totalImpressions: Math.floor(totalImpressions), 
+        hourlyChartData, 
+        peakHour: `${peakHour.toString().padStart(2, '0')}:00`,
+        categoryStats,
+        topBairros
+      } 
+    };
   }, [data, filters]);
+
+  const toggleFilter = (cat, val) => {
+    setFilters(p => {
+      const cur = p[cat];
+      const next = cur.includes(val) ? cur.filter(v => v !== val) : [...cur, val];
+      return { ...p, [cat]: next };
+    });
+  };
 
   const layers = [
     new HexagonLayer({
@@ -137,97 +177,156 @@ function App() {
       data: filteredData,
       pickable: true,
       extruded: true,
-      radius: 200,
-      
-      // FIXED SCALE (Normalized)
-      // Range: [0, 50000] (meters)
-      // Scale: 0.05 -> Max visual height approx 2500 units
-      elevationScale: 0.05, 
-      elevationDomain: [0, 50000],
-      elevationRange: [0, 50000],
-      
+      radius: 160,
+      elevationScale: 10,
       getPosition: d => d.coordinates,
       getElevationWeight: d => d.displayValue,
       aggregation: 'SUM',
-      colorRange: [
-        [1, 152, 189],
-        [73, 227, 206],
-        [216, 254, 181],
-        [254, 237, 177],
-        [254, 173, 84],
-        [209, 55, 78]
-      ],
-      transitions: {
-        elevationScale: 1000,
-        getElevationWeight: 1000
-      },
+      colorRange: [[255,255,178],[254,204,92],[253,141,60],[240,59,32],[189,0,38]],
       onHover: info => setHoverInfo(info),
-      updateTriggers: {
-        getElevationWeight: [filters]
-      }
+      updateTriggers: { getElevationWeight: [filters] }
     })
   ];
 
-  if (loading) {
-    return (
-      <div style={{
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        height: '100vh', 
-        backgroundColor: '#111', 
-        color: 'white',
-        fontFamily: 'sans-serif'
-      }}>
-        Carregando Dados...
-      </div>
-    );
-  }
+  const renderPieLabel = ({ name, percent }) => `${name} (${Math.floor(percent * 100)}%)`;
+
+  if (loading) return <div className="venus-app" style={{justifyContent: 'center', alignItems: 'center'}}>Carregando...</div>;
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
-      <DeckGL
-        initialViewState={INITIAL_VIEW_STATE}
-        controller={true}
-        layers={layers}
-        getTooltip={({object}) => object && `Contagem Ponderada: ${Math.round(object.elevationValue)}`}
-      >
-        <Map
-          mapStyle="https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json"
-          reuseMaps
-        />
-      </DeckGL>
-      
-      <FilterPanel 
-        filters={filters} 
-        onFilterChange={setFilters}
-        isOpen={isPanelOpen}
-        togglePanel={() => setIsPanelOpen(!isPanelOpen)}
-      />
-
-      {hoverInfo && hoverInfo.object && (
-        <div style={{...tooltipStyle, left: hoverInfo.x, top: hoverInfo.y}}>
-          <div><strong>Público Est.:</strong> {Math.round(hoverInfo.object.elevationValue).toLocaleString()}</div>
-          <div><strong>Pontos:</strong> {hoverInfo.object.points?.length || 0}</div>
+    <div className="venus-app">
+      <aside className="venus-sidebar">
+        <div className="venus-logo-container">
+          <div className="venus-logo-icon">V</div>
+          <div className="venus-logo-text-wrapper"><span className="venus-logo-text">VENUS</span></div>
         </div>
-      )}
+        <nav className="venus-nav">
+          <div className="venus-nav-item active"><span className="nav-icon"><Icons.Dashboard/></span><span className="nav-label">Dashboard</span></div>
+          <div className="venus-nav-item disabled"><span className="nav-icon"><Icons.Campaign/></span><span className="nav-label">Campanhas</span></div>
+          <div className="venus-nav-item disabled"><span className="nav-icon"><Icons.Settings/></span><span className="nav-label">Ajustes</span></div>
+        </nav>
+        <div className="venus-logout"><Icons.Logout/><span className="nav-label">Sair</span></div>
+      </aside>
 
-      <div style={{
-        position: 'absolute', 
-        top: 20, 
-        left: 20, 
-        background: 'rgba(0,0,0,0.7)', 
-        color: 'white', 
-        padding: '15px', 
-        borderRadius: '8px',
-        zIndex: 10,
-        pointerEvents: 'none'
-      }}>
-        <h2 style={{margin: '0 0 10px 0', fontSize: '18px'}}>Densidade de Fluxo de São Paulo</h2>
-        <p style={{margin: 0, fontSize: '14px', opacity: 0.8}}>
-          Segure <strong>Ctrl</strong> + arraste para inclinar.
-        </p>
-      </div>
+      <main className="venus-main">
+        <header className="venus-header">
+          <p className="venus-greeting">Olá, André!</p>
+          <h1 className="venus-title">Dashboard Vênus</h1>
+        </header>
+
+        <div className="venus-content-layout">
+          <div className="venus-left-col">
+            {/* Mapa com contêiner físico eDeckGL forçado */}
+            <div className={`venus-map-container ${isMapExpanded ? 'expanded' : ''}`} style={{ minHeight: '480px' }}>
+              <div className="venus-map-tools">
+                <button className="venus-map-btn" onClick={() => setIsMapExpanded(!isMapExpanded)}>
+                  {isMapExpanded ? <Icons.Minimize/> : <Icons.Expand/>}
+                </button>
+              </div>
+              <DeckGL 
+                initialViewState={INITIAL_VIEW_STATE} 
+                controller={true} 
+                layers={layers}
+                style={{ width: '100%', height: '100%', position: 'absolute' }}
+              >
+                <Map mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" reuseMaps />
+              </DeckGL>
+              {hoverInfo?.object && (
+                <div style={{position:'absolute', zIndex:20, left:hoverInfo.x, top:hoverInfo.y, transform:'translate(10px,10px)'}}>
+                  <div className="tooltip-box">Impacto: {formatNumber(hoverInfo.object.elevationValue)}</div>
+                </div>
+              )}
+            </div>
+
+            {!isMapExpanded && (
+              <div className="venus-dashboard-grid">
+                <div className="venus-card">
+                  <div className="venus-card-title">Público Total</div>
+                  <div className="venus-card-value">{formatNumber(stats.totalImpressions)}</div>
+                  <div className="venus-card-title" style={{marginTop:'20px', fontSize:'0.75rem'}}>Pico: {stats.peakHour}</div>
+                </div>
+                <div className="venus-card">
+                  <div className="venus-card-title">Fluxo 24h</div>
+                  <div style={{height:'140px'}}><ResponsiveContainer>
+                    <AreaChart data={stats.hourlyChartData}><XAxis dataKey="hour" hide/><Tooltip formatter={(val) => formatNumber(val)}/><Area type="monotone" dataKey="value" stroke="#4f46e5" fill="#4f46e522" strokeWidth={2}/></AreaChart>
+                  </ResponsiveContainer></div>
+                </div>
+                <div className="venus-card" style={{gridColumn: 'span 2'}}>
+                  <div className="venus-card-title">Distribuição por Bairro (Endereço)</div>
+                  <div style={{height:'200px'}}><ResponsiveContainer>
+                    <BarChart data={stats.topBairros} layout="vertical">
+                      <XAxis type="number" hide/><YAxis dataKey="name" type="category" width={150} fontSize={10} axisLine={false} tickLine={false}/><Tooltip formatter={(val) => formatNumber(val)}/><Bar dataKey="value" fill="#4f46e5" radius={[0,4,4,0]}/>
+                    </BarChart>
+                  </ResponsiveContainer></div>
+                </div>
+                <div className="venus-card">
+                  <div className="venus-card-title">Classe Social</div>
+                  <div style={{height:'220px'}}><ResponsiveContainer>
+                    <BarChart data={Object.entries(stats.categoryStats.classe).map(([k,v])=>({name:k, value:Math.floor(v)}))}>
+                      <XAxis dataKey="name" fontSize={10} axisLine={false} tickLine={false}/><Tooltip formatter={(val) => formatNumber(val)}/><Bar dataKey="value" fill="#818cf8" radius={[4,4,0,0]}/>
+                    </BarChart>
+                  </ResponsiveContainer></div>
+                </div>
+                <div className="venus-card">
+                  <div className="venus-card-title">Gênero</div>
+                  <div style={{height:'220px'}}><ResponsiveContainer>
+                    <PieChart><Pie data={Object.entries(stats.categoryStats.genero).map(([k,v])=>({name:k==='M'?'Masc':'Fem', value:Math.floor(v)}))} innerRadius={40} outerRadius={65} dataKey="value" label={renderPieLabel}><Cell fill="#4f46e5"/><Cell fill="#ec4899"/></Pie><Tooltip formatter={(val) => formatNumber(val)}/></PieChart>
+                  </ResponsiveContainer></div>
+                </div>
+              </div>
+            )}
+            
+            {/* Rodapé Físico */}
+            <div style={{ height: '120px', width: '100%', flexShrink: 0 }}></div>
+          </div>
+
+          <aside className="venus-right-col">
+            <h2 className="venus-filters-title">Filtros de Público</h2>
+            <div className="venus-filter-group">
+              <div className="venus-filter-label">Faixa Etária:</div>
+              <div className="venus-checkbox-grid">
+                {FILTER_CONFIG.idade.map(opt => (
+                  <label key={opt} className="venus-checkbox">
+                    <input type="checkbox" checked={filters.idade.includes(opt)} onChange={()=>toggleFilter('idade', opt)}/> {opt}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="venus-filter-group">
+              <div className="venus-filter-label">Gênero:</div>
+              <div className="venus-checkbox-grid">
+                {FILTER_CONFIG.genero.map(opt => (
+                  <label key={opt.id} className="venus-checkbox">
+                    <input type="checkbox" checked={filters.genero.includes(opt.id)} onChange={()=>toggleFilter('genero', opt.id)}/> {opt.label}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="venus-filter-group">
+              <div className="venus-filter-label">Classe Social:</div>
+              <div className="venus-checkbox-grid">
+                {FILTER_CONFIG.classe_social.map(opt => (
+                  <label key={opt} className="venus-checkbox">
+                    <input type="checkbox" checked={filters.classe_social.includes(opt)} onChange={()=>toggleFilter('classe_social', opt)}/> {opt}
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div className="venus-filter-group">
+              <div className="venus-filter-label">Horários (24h):</div>
+              <div className="venus-hour-grid">
+                {FILTER_CONFIG.horario.map(h => (
+                  <label key={h} className="venus-checkbox">
+                    <input type="checkbox" checked={filters.horario.includes(h)} onChange={()=>toggleFilter('horario', h)}/>
+                    {h}h
+                  </label>
+                ))}
+              </div>
+            </div>
+            {/* Rodapé Lateral */}
+            <div style={{ height: '120px', width: '100%' }}></div>
+          </aside>
+        </div>
+      </main>
     </div>
   );
 }
