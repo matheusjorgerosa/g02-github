@@ -1,13 +1,14 @@
 :root {
-  --primary: #4f46e5;
-  --primary-light: #818cf8;
+  --primary: #FF5500; /* Eletromidia Orange */
+  --primary-light: #FF8844;
+  --primary-dark: #CC4400;
   --bg-color: #f8fafc;
   --panel-bg: #ffffff;
   --text-main: #1e293b;
   --text-muted: #64748b;
   --border-color: #e2e8f0;
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-  --sidebar-width-expanded: 240px;
+  --sidebar-width-expanded: 260px;
   --sidebar-width-collapsed: 64px;
 }
 
@@ -25,7 +26,7 @@ body {
   width: 100vw;
 }
 
-/* Retractable Sidebar - Slightly thinner */
+/* Sidebar */
 .venus-sidebar {
   width: var(--sidebar-width-collapsed);
   background: var(--panel-bg);
@@ -46,28 +47,25 @@ body {
 .venus-logo-container {
   display: flex;
   align-items: center;
-  padding: 0 14px;
+  padding: 0 12px;
   margin-bottom: 40px;
   height: 40px;
   white-space: nowrap;
 }
 
-.venus-logo-icon {
-  min-width: 36px;
-  height: 36px;
-  background: var(--primary);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 800;
+.venus-logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
 }
 
 .venus-logo-text-wrapper {
   margin-left: 12px;
   opacity: 0;
   transition: opacity 0.2s;
+  display: flex;
+  flex-direction: column;
 }
 
 .venus-sidebar:hover .venus-logo-text-wrapper {
@@ -75,9 +73,17 @@ body {
 }
 
 .venus-logo-text {
-  font-weight: 800;
-  font-size: 1.1rem;
+  font-weight: 900;
+  font-size: 1.2rem;
   color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.venus-logo-sub {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 1px;
 }
 
 .venus-nav {
@@ -116,7 +122,8 @@ body {
 }
 
 .venus-nav-item:hover {
-  background: #f1f5f9;
+  background: #fff5f0;
+  color: var(--primary);
 }
 
 .venus-nav-item.active {
@@ -167,25 +174,27 @@ body {
   min-width: 0;
 }
 
-/* Map proportions restored */
 .venus-map-container {
   position: relative;
   background: white;
   border-radius: 16px;
   border: 1px solid var(--border-color);
   overflow: hidden;
-  height: 480px;
+  height: 550px; /* Increased fixed height */
+  min-height: 550px; /* Force minimum height */
+  width: 100%;
   box-shadow: var(--card-shadow);
   transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .venus-map-container.expanded {
   position: fixed;
   top: 32px;
   left: calc(var(--sidebar-width-collapsed) + 32px);
-  right: 380px; /* Filters panel + spacing */
+  right: 380px;
   bottom: 32px;
-  height: auto;
+  height: calc(100vh - 64px) !important;
   z-index: 50;
 }
 
@@ -194,6 +203,9 @@ body {
   top: 16px;
   right: 16px;
   z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .venus-map-btn {
@@ -205,6 +217,32 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   display: flex;
   align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  transition: all 0.2s;
+}
+
+.venus-map-btn:hover {
+  background: #fff5f0;
+  color: var(--primary);
+  border-color: var(--primary-light);
+}
+
+.venus-map-btn.toggle-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-weight: bold;
+}
+
+.venus-map-btn.toggle-btn:hover {
+  background: var(--primary-dark);
+}
+
+.venus-map-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
 }
 
 .venus-dashboard-grid {
@@ -284,7 +322,7 @@ body {
 }
 
 .venus-checkbox:hover {
-  color: var(--text-main);
+  color: var(--primary);
 }
 
 .venus-checkbox input {
