@@ -188,60 +188,66 @@ body {
 
 .venus-map-container.expanded {
   position: fixed;
-  top: 32px;
-  left: calc(var(--sidebar-width-collapsed) + 32px);
-  right: 380px;
-  bottom: 32px;
-  height: calc(100vh - 64px) !important;
-  min-height: calc(100vh - 64px) !important;
-  z-index: 50;
+  top: 0;
+  left: 0;
+  right: 0; 
+  bottom: 0;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  width: 100vw !important;
+  z-index: 2000;
+  border-radius: 0;
+  border: none;
+}
+
+.map-inner-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .venus-map-tools {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  z-index: 100;
+  top: 24px;
+  left: 24px;
+  z-index: 2100;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .venus-map-btn {
   background: white;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 8px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text-main);
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .venus-map-btn:hover {
   background: #fff5f0;
   color: var(--primary);
-  border-color: var(--primary-light);
+  transform: scale(1.05);
 }
 
 .venus-map-btn.toggle-btn {
   background: var(--primary);
   color: white;
   border: none;
-  font-weight: bold;
-}
-
-.venus-map-btn.toggle-btn:hover {
-  background: var(--primary-dark);
 }
 
 .venus-map-btn.active {
   background: var(--primary);
   color: white;
-  border-color: var(--primary);
 }
 
 .venus-dashboard-grid {
@@ -280,6 +286,7 @@ body {
   padding-right: 8px;
   display: flex;
   flex-direction: column;
+  z-index: 100;
 }
 
 .venus-filter-group {
@@ -337,4 +344,5 @@ body {
   border-radius: 8px;
   font-size: 13px;
   box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  z-index: 1000;
 }
