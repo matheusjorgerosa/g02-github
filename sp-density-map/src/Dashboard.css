@@ -27,20 +27,25 @@ body {
 }
 
 .venus-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
   width: var(--sidebar-width-collapsed);
   background: var(--panel-bg);
   border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   padding: 24px 0;
-  flex-shrink: 0;
-  transition: width 0.3s ease;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
-  z-index: 100;
+  z-index: 1000;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.02);
 }
 
 .venus-sidebar:hover {
   width: var(--sidebar-width-expanded);
+  box-shadow: 10px 0 30px rgba(0,0,0,0.1);
 }
 
 .venus-logo-container {
@@ -154,7 +159,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 32px;
+  padding: 32px 32px 32px calc(var(--sidebar-width-collapsed) + 32px);
   overflow-y: auto;
 }
 
@@ -182,7 +187,7 @@ body {
   min-height: 550px;
   width: 100%;
   box-shadow: var(--card-shadow);
-  transition: all 0.3s ease;
+  transition: transform 0.2s ease;
   z-index: 10;
 }
 
@@ -243,11 +248,17 @@ body {
   background: var(--primary);
   color: white;
   border: none;
+  font-weight: bold;
+}
+
+.venus-map-btn.toggle-btn:hover {
+  background: var(--primary-dark);
 }
 
 .venus-map-btn.active {
   background: var(--primary);
   color: white;
+  border-color: var(--primary);
 }
 
 .venus-dashboard-grid {
