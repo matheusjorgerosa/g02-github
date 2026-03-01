@@ -1,3 +1,5 @@
+
+*.csv
 # Dependencies
 node_modules
 
