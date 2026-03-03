@@ -1,0 +1,359 @@
+:root {
+  --primary: #FF5500;
+  --primary-light: #FF8844;
+  --primary-dark: #CC4400;
+  --bg-color: #f8fafc;
+  --panel-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --sidebar-width-expanded: 260px;
+  --sidebar-width-collapsed: 64px;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg-color);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: var(--text-main);
+  overflow: hidden;
+}
+
+.venus-app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.venus-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: var(--sidebar-width-collapsed);
+  background: var(--panel-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  z-index: 1000;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.02);
+}
+
+.venus-sidebar:hover {
+  width: var(--sidebar-width-expanded);
+  box-shadow: 10px 0 30px rgba(0,0,0,0.1);
+}
+
+.venus-logo-container {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  margin-bottom: 40px;
+  height: 40px;
+  white-space: nowrap;
+}
+
+.venus-logo-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.venus-logo-text-wrapper {
+  margin-left: 12px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  display: flex;
+  flex-direction: column;
+}
+
+.venus-sidebar:hover .venus-logo-text-wrapper {
+  opacity: 1;
+}
+
+.venus-logo-text {
+  font-weight: 900;
+  font-size: 1.2rem;
+  color: var(--primary);
+  letter-spacing: -0.5px;
+}
+
+.venus-logo-sub {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 1px;
+}
+
+.venus-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 10px;
+  flex: 1;
+}
+
+.venus-nav-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.venus-nav-item .nav-icon {
+  min-width: 24px;
+  display: flex;
+  justify-content: center;
+  margin-right: 16px;
+}
+
+.venus-nav-item .nav-label {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.venus-sidebar:hover .nav-label {
+  opacity: 1;
+}
+
+.venus-nav-item:hover {
+  background: #fff5f0;
+  color: var(--primary);
+}
+
+.venus-nav-item.active {
+  background: var(--primary);
+  color: white;
+}
+
+.venus-logout {
+  padding: 0 20px;
+  margin-top: auto;
+  color: var(--text-muted);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.venus-logout .nav-label {
+  opacity: 0;
+  margin-left: 16px;
+}
+
+.venus-sidebar:hover .nav-label {
+  opacity: 1;
+}
+
+.venus-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 32px 32px calc(var(--sidebar-width-collapsed) + 32px);
+  overflow-y: auto;
+}
+
+.venus-content-layout {
+  display: flex;
+  gap: 32px;
+  height: 100%;
+}
+
+.venus-left-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-width: 0;
+}
+
+.venus-map-container {
+  position: relative;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  height: 550px;
+  min-height: 550px;
+  width: 100%;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease;
+  z-index: 10;
+}
+
+.venus-map-container.expanded {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0; 
+  bottom: 0;
+  height: 100vh !important;
+  min-height: 100vh !important;
+  width: 100vw !important;
+  z-index: 2000;
+  border-radius: 0;
+  border: none;
+}
+
+.map-inner-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.venus-map-tools {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.venus-map-btn {
+  background: white;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+}
+
+.venus-map-btn:hover {
+  background: #fff5f0;
+  color: var(--primary);
+  transform: scale(1.05);
+}
+
+.venus-map-btn.toggle-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  font-weight: bold;
+}
+
+.venus-map-btn.toggle-btn:hover {
+  background: var(--primary-dark);
+}
+
+.venus-map-btn.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.venus-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.venus-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+}
+
+.venus-card-title {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.venus-card-value {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.venus-right-col {
+  width: 320px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+.venus-filter-group {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 16px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.venus-filter-label {
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  color: var(--text-main);
+}
+
+.venus-hour-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.venus-checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.venus-checkbox {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: color 0.2s;
+}
+
+.venus-checkbox:hover {
+  color: var(--primary);
+}
+
+.venus-checkbox input {
+  margin-right: 8px;
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+}
+
+.tooltip-box {
+  background: #1e293b;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  z-index: 1000;
+}
