@@ -1,5 +1,5 @@
 ---
-title: Arquitetura da Aplicação - Versão 2.0 (GCP)
+title: Arquitetura da Aplicação - Versão 2 (GCP)
 sidebar_position: 2
 ---
 
@@ -8,17 +8,17 @@ import useBaseUrl from '@docusaurus/useBaseUrl';
 # Arquitetura da Aplicação - Versão GCP
 
 :::info
-Esta é a **versão 2.0** da arquitetura da aplicação, **migrada para Google Cloud Platform (GCP)**. Esta versão representa uma evolução da arquitetura original AWS, mantendo os mesmos princípios de escalabilidade e alta disponibilidade, com otimizações específicas do ecossistema Google Cloud.
+Esta é a versão 2 da arquitetura da aplicação, migrada para Google Cloud Platform (GCP). Esta versão representa uma evolução da arquitetura original AWS, mantendo os mesmos princípios de escalabilidade e alta disponibilidade, com otimizações específicas do ecossistema Google Cloud.
 :::
 
 ## Visão Geral do Sistema
 
-O projeto consiste no desenvolvimento de uma aplicação web para análise de dados de mídia exterior (OOH - Out of Home) para a Eletromidia. No contexto real, a empresa recebe um arquivo CSV a cada 3 meses contendo dados consolidados. No entanto, para este projeto acadêmico, **estamos simulando um cenário de API em tempo real** que envia requisições HTTP com lotes de dados várias vezes por segundo/minuto, permitindo o estudo e desenvolvimento de uma **aplicação intensiva de dados com alta volumetria**.
+O projeto consiste no desenvolvimento de uma aplicação web para análise de dados de mídia exterior (OOH - Out of Home) para a Eletromidia. No contexto real, a empresa recebe um arquivo CSV a cada 3 meses contendo dados consolidados. No entanto, para este projeto acadêmico, estamos simulando um cenário de API em tempo real que envia requisições HTTP com lotes de dados várias vezes por segundo/minuto, permitindo o estudo e desenvolvimento de uma aplicação intensiva de dados com alta volumetria.
 
-A arquitetura foi dividida em **dois momentos principais**:
+A arquitetura foi dividida em dois momentos principais:
 
-1. **Ingestão de Dados e Armazenamento** (Data Lake e Data Warehouse)
-2. **Utilização da Aplicação** (Frontend/Backend - Dashboard)
+1. Ingestão de Dados e Armazenamento (Data Lake e Data Warehouse)
+2. Utilização da Aplicação (Frontend/Backend - Dashboard)
 
 Esta divisão permite uma separação clara de responsabilidades, escalabilidade independente de cada componente e otimização específica para diferentes tipos de carga de trabalho.
 
@@ -56,7 +56,7 @@ graph TB
 ## Migração de AWS para GCP
 
 :::tip Por que migrar para GCP?
-A decisão de migrar para Google Cloud Platform foi baseada na atual stack tecnológica do parceiro de projeto, Eletromídia. Dessa forma, a fins de aprendizado e compatibilidade com o parceiro, alteramos a arquitetura para a versão 2.0, utilizando o ambiente Google Cloud Platform. Esta seção documenta as principais motivações e trade-offs envolvidos.
+A decisão de migrar para Google Cloud Platform foi baseada na atual stack tecnológica do parceiro de projeto, Eletromídia. Dessa forma, a fins de aprendizado e compatibilidade com o parceiro, alteramos a arquitetura para sua segunda versão, utilizando o ambiente Google Cloud Platform. Esta seção documenta as principais motivações e trade-offs envolvidos.
 :::
 
 ---
@@ -172,17 +172,17 @@ graph TB
 
 ### 1.4 Fluxo de Dados Detalhado
 
-1. **API Claro para Cloud Endpoints (HTTP POST):** A API externa envia lotes de dados via HTTP POST. O Cloud Endpoints valida a requisição e retorna 200 OK imediatamente, com latência típica de 10-30ms.
+1. API Claro para Cloud Endpoints (HTTP POST): A API externa envia lotes de dados via HTTP POST. O Cloud Endpoints valida a requisição e retorna 200 OK imediatamente, com latência típica de 10-30ms.
 
-2. **Cloud Endpoints para Pub/Sub (Publicação):** O Cloud Endpoints publica a mensagem no tópico Pub/Sub de forma assíncrona, sem bloquear a resposta ao cliente. A mensagem fica retida no tópico até ser processada, com retenção de até 31 dias.
+2. Cloud Endpoints para Pub/Sub (Publicação): O Cloud Endpoints publica a mensagem no tópico Pub/Sub de forma assíncrona, sem bloquear a resposta ao cliente. A mensagem fica retida no tópico até ser processada, com retenção de até 31 dias.
 
-3. **Pub/Sub para Cloud Functions (Push via Eventarc):** O Cloud Functions é acionado automaticamente via push, sem necessidade de polling. Processa múltiplas mensagens concorrentemente (até 1000 por instância). Em caso de erro, a mensagem é enviada para um Dead Letter Topic com retry automático.
+3. Pub/Sub para Cloud Functions (Push via Eventarc): O Cloud Functions é acionado automaticamente via push, sem necessidade de polling. Processa múltiplas mensagens concorrentemente (até 1000 por instância). Em caso de erro, a mensagem é enviada para um Dead Letter Topic com retry automático.
 
-4. **Cloud Functions para Cloud Storage (Gravação de dados brutos):** O Cloud Functions valida e transforma os dados conforme necessário, grava no formato Apache Iceberg no Cloud Storage e particiona por data/hora para otimizar consultas futuras.
+4. Cloud Functions para Cloud Storage (Gravação de dados brutos): O Cloud Functions valida e transforma os dados conforme necessário, grava no formato Apache Iceberg no Cloud Storage e particiona por data/hora para otimizar consultas futuras.
 
-5. **Worker ETL (Leitura periódica via Cloud Scheduler):** Executa em intervalos regulares (ex: a cada hora), lê novos dados da camada RAW via BigQuery sobre BigLake e aplica transformações, agregações e limpeza.
+5. Worker ETL (Leitura periódica via Cloud Scheduler): Executa em intervalos regulares (ex: a cada hora), lê novos dados da camada RAW via BigQuery sobre BigLake e aplica transformações, agregações e limpeza.
 
-6. **Worker para Cloud SQL (ETL e ingestão):** Carrega dados processados no banco relacional, atualiza tabelas dimensionais e fatos, e disponibiliza os dados para consulta pelo dashboard.
+6. Worker para Cloud SQL (ETL e ingestão): Carrega dados processados no banco relacional, atualiza tabelas dimensionais e fatos, e disponibiliza os dados para consulta pelo dashboard.
 
 ### 1.5 Estimativas de Capacidade e Custo
 
@@ -190,7 +190,7 @@ graph TB
 Os valores abaixo são estimativas baseadas em cenários simulados e preços GCP de fevereiro/2026, sujeitos a ajustes conforme a volumetria real do projeto.
 :::
 
-**Cenário de exemplo: 1.000 requisições por segundo**
+Cenário de exemplo: 1.000 requisições por segundo
 
 | Serviço GCP | Capacidade | Custo Mensal Estimado |
 |-------------|-----------|----------------------|
@@ -198,7 +198,7 @@ Os valores abaixo são estimativas baseadas em cenários simulados e preços GCP
 | Cloud Pub/Sub | 1.000 msg/s = 2,6 bilhões/mês | US$ 104 + US$ 250 (data) = US$ 354 |
 | Cloud Functions 2ª Gen (500ms, 1GB) | 2,6 bilhões invocações | US$ 1.040 + US$ 975 = US$ 2.015 |
 | Cloud Storage (100GB novos/mês) | 100GB storage + transfer | US$ 2,00 + transfer |
-| **Total** | | **~US$ 10.200/mês** |
+| Total | | **~US$ 10.200/mês** |
 
 ---
 
@@ -206,7 +206,7 @@ Os valores abaixo são estimativas baseadas em cenários simulados e preços GCP
 
 ### 2.1 Visão Geral
 
-Esta segunda parte da arquitetura é responsável pela **interface de usuário e processamento de requisições** dos analistas da Eletromidia. O sistema precisa suportar **altos volumes de requisições simultâneas**, pois múltiplos usuários estarão acessando dashboards, gerando relatórios e aplicando filtros complexos sobre grandes conjuntos de dados.
+Esta segunda parte da arquitetura é responsável pela interface de usuário e processamento de requisições dos analistas da Eletromidia. O sistema precisa suportar altos volumes de requisições simultâneas, pois múltiplos usuários estarão acessando dashboards, gerando relatórios e aplicando filtros complexos sobre grandes conjuntos de dados.
 
 ### 2.2 Diagrama da Arquitetura da Aplicação
 
@@ -346,7 +346,7 @@ graph TB
 
 ### 2.6 Estimativa de Capacidade Total
 
-**Cenário: 1.000 usuários simultâneos, 10 req/s por usuário**
+Cenário: 1.000 usuários simultâneos, 10 req/s por usuário
 
 | Camada | Capacidade | Custo Mensal |
 |--------|-----------|-------------|
@@ -358,23 +358,20 @@ graph TB
 | Cloud SQL (db-n1-standard-2) | HA Regional | US$ 187 |
 | Memorystore Redis (5GB Standard) | 100.000 ops/s | US$ 353 |
 | Dataflow + Cloud Scheduler | 100 execuções/dia | US$ 50 |
-| **Total** | | **~US$ 1.561/mês** |
+| Total | | **~US$ 1.561/mês** |
 
 
 ## 3. Considerações Finais
 
 :::warning Versão 2.0
-Esta documentação representa a **versão 2.0** da arquitetura, migrada para GCP. Está sujeita a mudanças conforme testes de carga revelam gargalos, requisitos de negócio evoluem, novos serviços GCP são considerados e feedback dos stakeholders é incorporado.
+Esta documentação representa a versão 2.0 da arquitetura, migrada para GCP. Está sujeita a mudanças conforme testes de carga revelam gargalos, requisitos de negócio evoluem, novos serviços GCP são considerados e feedback dos stakeholders é incorporado.
 :::
 
 ### 3.1 Próximos Passos
 
-1. **Validação com PoC:** Implementar arquitetura mínima para validar premissas
-2. **Testes de carga:** Validar capacidade e identificar gargalos com Cloud Load Testing
-3. **Otimização de custos:** Ajustar tipos de instância e implementar committed use discounts
-4. **Segurança:** Implementar Cloud Armor (WAF), VPC Service Controls, IAM com least privilege
-5. **Disaster Recovery:** Definir RPO/RTO e implementar backups cross-region
-6. **CI/CD:** Automatizar deploy com Cloud Build ou GitHub Actions
+1. Validação com PoC: Implementar arquitetura mínima para validar premissas
+2. Testes de carga: Validar capacidade e identificar gargalos com Cloud Load Testing
+6. CI/CD: Automatizar deploy com Cloud Build ou GitHub Actions
 
 ### 3.3 Recursos de Aprendizado
 
