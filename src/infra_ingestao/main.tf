@@ -46,7 +46,7 @@ resource "google_pubsub_subscription" "ingestao_sub" {
   name                 = "ingestao-sub"
   topic                = google_pubsub_topic.ingestao.id
   project              = var.project_id
-  ack_deadline_seconds = 20
+  ack_deadline_seconds = 60
 
   retry_policy {
     minimum_backoff = "10s"
@@ -199,7 +199,7 @@ resource "google_cloud_run_v2_job" "consumer" {
   template {
     template {
       service_account = google_service_account.cloud_run_consumer.email
-      timeout         = "120s"
+      timeout         = "300s"
 
       containers {
         image = "${var.region}-docker.pkg.dev/${var.project_id}/${google_artifact_registry_repository.docker_repo.repository_id}/consumer:latest"
@@ -221,7 +221,7 @@ resource "google_cloud_run_v2_job" "consumer" {
 
         env {
           name  = "BATCH_SIZE"
-          value = "100"
+          value = "10000"
         }
       }
     }
@@ -239,7 +239,7 @@ resource "google_cloud_run_v2_job" "consumer" {
 
 resource "google_cloud_scheduler_job" "trigger_consumer" {
   name      = "trigger-consumer-batch"
-  schedule  = "*/5 * * * *"
+  schedule  = "*/1 * * * *"
   time_zone = "America/Sao_Paulo"
   project   = var.project_id
   region    = var.region
@@ -488,6 +488,38 @@ resource "google_eventarc_trigger" "raw_file_created" {
 }
 
 # =============================================================================
+# BigLake Connection — Permite BigQuery ler metadata Iceberg do GCS
+# =============================================================================
+
+# Habilitar API do BigQuery Connection
+resource "google_project_service" "bigqueryconnection_api" {
+  service            = "bigqueryconnection.googleapis.com"
+  project            = var.project_id
+  disable_on_destroy = false
+}
+
+# BigLake Connection (Cloud Resource)
+resource "google_bigquery_connection" "biglake" {
+  provider      = google-beta
+  connection_id = "biglake-gcs"
+  location      = var.region
+  project       = var.project_id
+  friendly_name = "BigLake GCS (Iceberg)"
+  description   = "Conexão BigLake para ler metadados Iceberg do GCS"
+
+  cloud_resource {}
+
+  depends_on = [google_project_service.bigqueryconnection_api]
+}
+
+# Dar permissão à SA do BigLake para ler o bucket
+resource "google_storage_bucket_iam_member" "biglake_reader" {
+  bucket = google_storage_bucket.datalake.name
+  role   = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_bigquery_connection.biglake.cloud_resource[0].service_account_id}"
+}
+
+# =============================================================================
 # BigQuery — Consulta à camada trusted (tabela Iceberg via Parquet)
 # =============================================================================
 
@@ -506,18 +538,18 @@ resource "google_bigquery_table" "ingestao" {
   deletion_protection = false
 
   external_data_configuration {
-    autodetect    = false
-    source_format = "PARQUET"
-    source_uris   = ["gs://${google_storage_bucket.datalake.name}/trusted/default.db/ingestao/data/*"]
+    autodetect    = true
+    source_format = "ICEBERG"
+    connection_id = "projects/${var.project_id}/locations/${var.region}/connections/${google_bigquery_connection.biglake.connection_id}"
 
-    hive_partitioning_options {
-      mode                     = "AUTO"
-      source_uri_prefix        = "gs://${google_storage_bucket.datalake.name}/trusted/default.db/ingestao/data/"
-      require_partition_filter  = false
-    }
+    source_uris = [
+      "gs://${google_storage_bucket.datalake.name}/trusted/default.db/ingestao/metadata/00001-770b4cb4-97a0-413e-a6e4-309f9668db3a.metadata.json"
+    ]
   }
 
   depends_on = [
     google_storage_bucket.datalake,
+    google_bigquery_connection.biglake,
+    google_storage_bucket_iam_member.biglake_reader,
   ]
 }
