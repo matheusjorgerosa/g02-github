@@ -42,3 +42,23 @@ output "scheduler_job_name" {
   description = "Nome do Cloud Scheduler que dispara o consumer"
   value       = google_cloud_scheduler_job.trigger_consumer.name
 }
+
+output "transformer_url" {
+  description = "URL do Cloud Run transformer (raw → trusted)"
+  value       = google_cloud_run_v2_service.transformer.uri
+}
+
+output "eventarc_trigger_name" {
+  description = "Nome do trigger Eventarc (raw file created)"
+  value       = google_eventarc_trigger.raw_file_created.name
+}
+
+output "cloud_sql_instance" {
+  description = "Connection name da instância Cloud SQL (catálogo Iceberg)"
+  value       = google_sql_database_instance.iceberg_catalog.connection_name
+}
+
+output "bigquery_table" {
+  description = "Tabela BigQuery externa (trusted Iceberg)"
+  value       = "${google_bigquery_dataset.trusted.dataset_id}.${google_bigquery_table.ingestao.table_id}"
+}

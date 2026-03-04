@@ -8,3 +8,9 @@ variable "region" {
   type        = string
   default     = "southamerica-east1"
 }
+
+variable "iceberg_db_password" {
+  description = "Senha do usuário iceberg no Cloud SQL (catálogo Iceberg)"
+  type        = string
+  sensitive   = true
+}

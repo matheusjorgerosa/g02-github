@@ -6,3 +6,4 @@
 credentials.json
 *.auto.tfvars
 google-cloud-sdk/
+terraform.tfvars

@@ -111,7 +111,6 @@ func main() {
 	obj := bucket.Object(objectPath)
 	writer := obj.NewWriter(ctx)
 	writer.ContentType = "application/gzip"
-	writer.ContentEncoding = "gzip"
 
 	if _, err := writer.Write(buf.Bytes()); err != nil {
 		log.Fatalf("Erro ao escrever no GCS: %v", err)
