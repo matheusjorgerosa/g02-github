@@ -1,4 +1,5 @@
 import gzip
+import io
 import json
 import os
 import logging
@@ -6,8 +7,10 @@ from datetime import datetime
 
 from flask import Flask, request, jsonify
 from google.cloud import storage
+from google.cloud import bigquery as bq
 from google.api_core.exceptions import NotFound
 import pyarrow as pa
+import pyarrow.parquet
 from pyiceberg.catalog.sql import SqlCatalog, SqlCatalogBaseTable
 from pyiceberg.schema import Schema
 from pyiceberg.types import (
@@ -29,6 +32,7 @@ logger = logging.getLogger(__name__)
 
 # --- Config ---
 GCS_BUCKET = os.environ.get("GCS_BUCKET", "")
+GCP_PROJECT = os.environ.get("GCP_PROJECT", "")
 ICEBERG_WAREHOUSE = os.environ.get("ICEBERG_WAREHOUSE", "")
 DB_USER = os.environ.get("DB_USER", "iceberg")
 DB_PASS = os.environ.get("DB_PASS", "")
@@ -36,6 +40,7 @@ DB_NAME = os.environ.get("DB_NAME", "iceberg")
 INSTANCE_CONNECTION_NAME = os.environ.get("INSTANCE_CONNECTION_NAME", "")
 
 TABLE_IDENTIFIER = "default.ingestao"
+BQ_TABLE = f"{GCP_PROJECT}.trusted.ingestao"
 
 ICEBERG_SCHEMA = Schema(
     NestedField(1, "event_data", StringType(), required=False),
@@ -210,7 +215,8 @@ def deduplicate(records: list[dict]) -> list[dict]:
 
 
 def transform_and_write(records: list[dict], source_file: str):
-    """Converte registros para PyArrow e faz append na tabela Iceberg."""
+    """Converte registros para PyArrow e faz append na tabela Iceberg.
+    Em seguida, carrega os mesmos dados no BigQuery (dual-write)."""
     now = datetime.utcnow()
 
     arrow_schema = pa.schema([
@@ -232,10 +238,42 @@ def transform_and_write(records: list[dict], source_file: str):
         schema=arrow_schema,
     )
 
+    # 1. Append no Iceberg (source of truth)
     table = get_or_create_table()
     table.append(arrow_table)
-
     logger.info(f"Escritos {len(records)} registros na tabela Iceberg ({source_file})")
+
+    # 2. Load no BigQuery (dual-write)
+    try:
+        load_to_bigquery(arrow_table, now, source_file, len(records))
+    except Exception as e:
+        logger.error(f"Erro ao carregar no BigQuery (dados salvos no Iceberg): {e}", exc_info=True)
+
+
+def load_to_bigquery(arrow_table: pa.Table, ingested_at: datetime, source_file: str, num_records: int):
+    """Carrega dados no BigQuery como tabela nativa (append)."""
+    client = bq.Client(project=GCP_PROJECT)
+
+    # Adicionar coluna ingested_day (DATE) para partitioning
+    ingested_day = ingested_at.date()
+    bq_table = arrow_table.append_column(
+        "ingested_day",
+        pa.array([ingested_day] * num_records, type=pa.date32()),
+    )
+
+    job_config = bq.LoadJobConfig(
+        write_disposition=bq.WriteDisposition.WRITE_APPEND,
+        source_format=bq.SourceFormat.PARQUET,
+    )
+
+    # Converter Arrow → Parquet em memória
+    buf = io.BytesIO()
+    pa.parquet.write_table(bq_table, buf)
+    buf.seek(0)
+
+    job = client.load_table_from_file(buf, BQ_TABLE, job_config=job_config)
+    job.result()  # aguarda conclusão
+    logger.info(f"BigQuery: {job.output_rows} rows carregadas em {BQ_TABLE}")
 
 
 

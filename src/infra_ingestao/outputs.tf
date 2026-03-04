@@ -58,12 +58,7 @@ output "cloud_sql_instance" {
   value       = google_sql_database_instance.iceberg_catalog.connection_name
 }
 
-output "biglake_connection" {
-  description = "ID da conexão BigLake"
-  value       = google_bigquery_connection.biglake.connection_id
-}
-
 output "bigquery_table" {
-  description = "Tabela BigQuery externa (trusted Iceberg)"
+  description = "Tabela BigQuery nativa (trusted, load via transformer)"
   value       = "${google_bigquery_dataset.trusted.dataset_id}.${google_bigquery_table.ingestao.table_id}"
 }

@@ -368,6 +368,19 @@ resource "google_project_iam_member" "transformer_cloudsql_client" {
   member  = "serviceAccount:${google_service_account.cloud_run_transformer.email}"
 }
 
+# Permitir o transformer escrever no BigQuery
+resource "google_project_iam_member" "transformer_bigquery_editor" {
+  project = var.project_id
+  role    = "roles/bigquery.dataEditor"
+  member  = "serviceAccount:${google_service_account.cloud_run_transformer.email}"
+}
+
+resource "google_project_iam_member" "transformer_bigquery_job" {
+  project = var.project_id
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${google_service_account.cloud_run_transformer.email}"
+}
+
 # =============================================================================
 # Cloud Run Service — Transformer (Python) — raw/ → trusted/ (Iceberg)
 # =============================================================================
@@ -488,39 +501,7 @@ resource "google_eventarc_trigger" "raw_file_created" {
 }
 
 # =============================================================================
-# BigLake Connection — Permite BigQuery ler metadata Iceberg do GCS
-# =============================================================================
-
-# Habilitar API do BigQuery Connection
-resource "google_project_service" "bigqueryconnection_api" {
-  service            = "bigqueryconnection.googleapis.com"
-  project            = var.project_id
-  disable_on_destroy = false
-}
-
-# BigLake Connection (Cloud Resource)
-resource "google_bigquery_connection" "biglake" {
-  provider      = google-beta
-  connection_id = "biglake-gcs"
-  location      = var.region
-  project       = var.project_id
-  friendly_name = "BigLake GCS (Iceberg)"
-  description   = "Conexão BigLake para ler metadados Iceberg do GCS"
-
-  cloud_resource {}
-
-  depends_on = [google_project_service.bigqueryconnection_api]
-}
-
-# Dar permissão à SA do BigLake para ler o bucket
-resource "google_storage_bucket_iam_member" "biglake_reader" {
-  bucket = google_storage_bucket.datalake.name
-  role   = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_bigquery_connection.biglake.cloud_resource[0].service_account_id}"
-}
-
-# =============================================================================
-# BigQuery — Consulta à camada trusted (tabela Iceberg via Parquet)
+# BigQuery — Consulta à camada trusted (tabela nativa, load via transformer)
 # =============================================================================
 
 resource "google_bigquery_dataset" "trusted" {
@@ -537,19 +518,35 @@ resource "google_bigquery_table" "ingestao" {
   project             = var.project_id
   deletion_protection = false
 
-  external_data_configuration {
-    autodetect    = true
-    source_format = "ICEBERG"
-    connection_id = "projects/${var.project_id}/locations/${var.region}/connections/${google_bigquery_connection.biglake.connection_id}"
-
-    source_uris = [
-      "gs://${google_storage_bucket.datalake.name}/trusted/default.db/ingestao/metadata/00001-770b4cb4-97a0-413e-a6e4-309f9668db3a.metadata.json"
-    ]
+  time_partitioning {
+    type  = "DAY"
+    field = "ingested_at"
   }
 
+  schema = jsonencode([
+    {
+      name = "event_data"
+      type = "STRING"
+      mode = "NULLABLE"
+    },
+    {
+      name = "ingested_at"
+      type = "TIMESTAMP"
+      mode = "NULLABLE"
+    },
+    {
+      name = "source_file"
+      type = "STRING"
+      mode = "NULLABLE"
+    },
+    {
+      name = "ingested_day"
+      type = "DATE"
+      mode = "NULLABLE"
+    }
+  ])
+
   depends_on = [
-    google_storage_bucket.datalake,
-    google_bigquery_connection.biglake,
-    google_storage_bucket_iam_member.biglake_reader,
+    google_bigquery_dataset.trusted,
   ]
 }
