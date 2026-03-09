@@ -61,16 +61,23 @@ func main() {
 	defer cancel()
 
 	err = sub.Receive(pullCtx, func(_ context.Context, msg *pubsub.Message) {
-		mu.Lock()
-		defer mu.Unlock()
+        mu.Lock()
+        defer mu.Unlock()
 
-		messages = append(messages, json.RawMessage(msg.Data))
-		msg.Ack()
+        // Valida se o payload é JSON válido antes de appendar
+        if !json.Valid(msg.Data) {
+            log.Printf("Mensagem inválida (não é JSON), descartando: %s", string(msg.Data))
+            msg.Ack() // ack para não reprocessar lixo indefinidamente
+            return
+        }
 
-		if len(messages) >= batchSize {
-			cancel()
-		}
-	})
+        messages = append(messages, json.RawMessage(msg.Data))
+        msg.Ack()
+
+        if len(messages) >= batchSize {
+            cancel()
+        }
+    })
 
 	if err != nil && err != context.Canceled {
 		log.Printf("Receive encerrado: %v", err)
