@@ -4,18 +4,76 @@
   --primary-dark: #CC4400;
   --bg-color: #f8fafc;
   --panel-bg: #ffffff;
+  --panel-hover: #fff5f0;
   --text-main: #1e293b;
   --text-muted: #64748b;
+  --text-inverse: #ffffff;
   --border-color: #e2e8f0;
   --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --tooltip-bg: #1e293b;
+  --toggle-off-bg: #cbd5e1;
+  --toggle-knob: #ffffff;
   --sidebar-width-expanded: 260px;
   --sidebar-width-collapsed: 64px;
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── Font size — must target html so rem units cascade everywhere ─────────── */
+html { font-size: 14px; }
+html[data-font-size="small"]  { font-size: 12px; }
+html[data-font-size="medium"] { font-size: 14px; }
+html[data-font-size="large"]  { font-size: 17px; }
+html[data-font-size="xlarge"] { font-size: 20px; }
+
+/* ── Font family ───────────────────────────────────────────────────────────── */
+[data-font-family="inter"]    { --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+[data-font-family="dyslexic"] { --font-family: 'OpenDyslexic', 'Comic Sans MS', cursive; }
+[data-font-family="mono"]     { --font-family: 'Courier New', Courier, monospace; }
+[data-font-family="serif"]    { --font-family: 'Georgia', 'Times New Roman', serif; }
+
+/* ── High contrast theme ───────────────────────────────────────────────────── */
+[data-high-contrast="true"] {
+  --bg-color: #000000;
+  --panel-bg: #111111;
+  --panel-hover: #1a1a1a;
+  --text-main: #ffffff;
+  --text-muted: #cccccc;
+  --text-inverse: #000000;
+  --border-color: #ffffff;
+  --card-shadow: 0 0 0 2px #ffffff;
+  --tooltip-bg: #ffffff;
+  --toggle-off-bg: #555555;
+  --toggle-knob: #000000;
+}
+[data-high-contrast="true"] .venus-nav-item:hover     { background: #333333; color: #ffffff; }
+[data-high-contrast="true"] .venus-nav-item.active    { background: var(--primary); color: #ffffff; outline: 2px solid #ffffff; }
+[data-high-contrast="true"] .venus-card               { border: 2px solid #ffffff; }
+[data-high-contrast="true"] .venus-map-btn            { border: 2px solid #ffffff; }
+[data-high-contrast="true"] .venus-checkbox           { color: #ffffff; }
+[data-high-contrast="true"] .venus-filter-group       { border: 2px solid #ffffff; }
+[data-high-contrast="true"] .venus-map-container      { border: 2px solid #ffffff; }
+[data-high-contrast="true"] .settings-section         { border: 2px solid #ffffff; }
+[data-high-contrast="true"] .settings-option          { border-color: #888888; color: #ffffff; }
+[data-high-contrast="true"] .settings-option.selected { background: var(--primary); color: #ffffff; border-color: var(--primary); outline: 2px solid #ffffff; }
+[data-high-contrast="true"] .settings-toggle.on       { background: var(--primary); outline: 2px solid #ffffff; }
+[data-high-contrast="true"] .settings-toggle.off      { background: #555555; outline: 2px solid #ffffff; }
+[data-high-contrast="true"] .tooltip-box              { background: #ffffff; color: #000000; border: 2px solid #000000; }
+[data-high-contrast="true"] .settings-reset-btn       { border: 2px solid #ffffff; color: #ffffff; }
+
+/* ── Reduced motion ────────────────────────────────────────────────────────── */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
 }
 
 body {
   margin: 0;
   background-color: var(--bg-color);
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-family);
+  font-size: 1rem;
   color: var(--text-main);
   overflow: hidden;
 }
@@ -126,13 +184,13 @@ body {
 }
 
 .venus-nav-item:hover {
-  background: #fff5f0;
+  background: var(--panel-hover);
   color: var(--primary);
 }
 
 .venus-nav-item.active {
   background: var(--primary);
-  color: white;
+  color: var(--text-inverse);
 }
 
 .venus-logout {
@@ -161,6 +219,11 @@ body {
   flex-direction: column;
   padding: 32px 32px 32px calc(var(--sidebar-width-collapsed) + 32px);
   overflow-y: auto;
+  transition: padding-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.venus-sidebar:hover ~ .venus-main {
+  padding-left: calc(var(--sidebar-width-expanded) + 32px);
 }
 
 .venus-content-layout {
@@ -179,7 +242,7 @@ body {
 
 .venus-map-container {
   position: relative;
-  background: white;
+  background: var(--panel-bg);
   border-radius: 16px;
   border: 1px solid var(--border-color);
   overflow: hidden;
@@ -224,7 +287,7 @@ body {
 }
 
 .venus-map-btn {
-  background: white;
+  background: var(--panel-bg);
   border: 1px solid var(--border-color);
   border-radius: 8px;
   width: 40px;
@@ -239,14 +302,14 @@ body {
 }
 
 .venus-map-btn:hover {
-  background: #fff5f0;
+  background: var(--panel-hover);
   color: var(--primary);
   transform: scale(1.05);
 }
 
 .venus-map-btn.toggle-btn {
   background: var(--primary);
-  color: white;
+  color: var(--text-inverse);
   border: none;
   font-weight: bold;
 }
@@ -257,7 +320,7 @@ body {
 
 .venus-map-btn.active {
   background: var(--primary);
-  color: white;
+  color: var(--text-inverse);
   border-color: var(--primary);
 }
 
@@ -268,7 +331,7 @@ body {
 }
 
 .venus-card {
-  background: white;
+  background: var(--panel-bg);
   border-radius: 16px;
   border: 1px solid var(--border-color);
   padding: 24px;
@@ -301,7 +364,7 @@ body {
 }
 
 .venus-filter-group {
-  background: white;
+  background: var(--panel-bg);
   padding: 20px;
   border-radius: 12px;
   border: 1px solid var(--border-color);
@@ -349,11 +412,288 @@ body {
 }
 
 .tooltip-box {
-  background: #1e293b;
-  color: white;
+  background: var(--tooltip-bg);
+  color: var(--text-inverse);
   padding: 12px;
   border-radius: 8px;
   font-size: 13px;
   box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
   z-index: 1000;
+}
+/* ── Accessibility: skip-to-content link ──────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -9999px;
+  left: 0;
+  z-index: 9999;
+  padding: 12px 20px;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0 0 8px 0;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ── Nav items as buttons (reset native button styles) ────────────────────── */
+.venus-nav-item,
+.venus-logout {
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-family);
+  font-size: 1rem;
+  width: 100%;
+}
+.venus-nav-item:focus-visible,
+.venus-logout:focus-visible,
+.venus-map-btn:focus-visible,
+.settings-option input:focus-visible,
+.settings-toggle:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+.venus-nav-item.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Settings panel ───────────────────────────────────────────────────────── */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  max-width: 900px;
+  padding-bottom: 80px;
+}
+
+.settings-header {
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 20px;
+}
+
+.settings-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0 0 8px;
+}
+
+.settings-subtitle {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+}
+
+.settings-section {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.settings-section-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-section-icon {
+  display: flex;
+  align-items: center;
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.settings-desc-block {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.settings-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.settings-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: var(--text-muted);
+  transition: all 0.15s ease;
+  user-select: none;
+}
+.settings-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.settings-option:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+.settings-option.selected {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--text-inverse);
+  font-weight: 700;
+}
+
+/* Toggle switch */
+.settings-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-toggle {
+  position: relative;
+  width: 50px;
+  height: 28px;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+.settings-toggle.on  { background: var(--primary); }
+.settings-toggle.off { background: var(--toggle-off-bg); }
+
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--toggle-knob);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  transition: transform 0.25s ease;
+  pointer-events: none;
+  display: block;
+}
+.settings-toggle.on  .toggle-knob { transform: translateX(22px); }
+.settings-toggle.off .toggle-knob { transform: translateX(0); }
+
+[data-high-contrast="true"] .settings-toggle .toggle-knob { background: var(--toggle-knob); }
+
+.settings-desc {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+/* Color swatch preview */
+.colorblind-preview {
+  display: flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+.color-swatch {
+  flex: 1;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Font size live preview */
+.font-preview {
+  font-size: 1rem;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--bg-color);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+/* Reset button */
+.settings-reset-btn {
+  align-self: flex-start;
+  padding: 10px 24px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: var(--font-family);
+}
+.settings-reset-btn:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+.settings-reset-btn:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Venus header */
+.venus-header {
+  margin-bottom: 24px;
+}
+.venus-greeting {
+  margin: 0 0 4px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.venus-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+.venus-filters-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 16px;
 }
