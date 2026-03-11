@@ -23,14 +23,14 @@ func Init() {
 		os.Getenv("DB_PORT"),
 	)
 
-	// Tenta conectar até 5 vezes antes de desistir
-	for i := 1; i <= 5; i++ {
+	// Tenta conectar 3 vezes 
+	for i := 1; i <= 3; i++ {
 		DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 		if err == nil {
 			break
 		}
 		logger.Warn("Tentativa de conexão com banco falhou. Tentando novamente...", zap.Int("tentativa", i))
-		time.Sleep(2 * time.Second) // Aguarda 2 segundos para o banco respirar
+		time.Sleep(2 * time.Second) 
 	}
 
 	if err != nil {
