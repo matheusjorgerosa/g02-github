@@ -58,11 +58,13 @@ func main() {
 	r.GET("/health", func(c *gin.Context) { c.JSON(200, gin.H{"status": "up"}) })
 
 
-	// Rotas protegidas (Grupo /admin)
+	// Rotas protegidas do admin
 	protected := r.Group("/admin")
 	protected.Use(middleware.AuthMiddleware()) 
-	{
+	{	
+		protected.GET("/users",middleware.AdminOnly(), userHandler.ListUsers)
 		protected.POST("/users", middleware.AdminOnly(), userHandler.CreateUser)
+		protected.PUT("/users/:id",middleware.AdminOnly() ,userHandler.AdminUpdateUser)
 		protected.DELETE("/users/:id", middleware.AdminOnly(), userHandler.DeleteUser)
 	}
 

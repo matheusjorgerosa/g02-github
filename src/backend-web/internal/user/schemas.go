@@ -8,6 +8,14 @@ type CreateUserRequest struct {
 	Role     string `json:"role" binding:"required,oneof=admin user"`
 }
 
+//Schema update
+type AdminUpdateUserRequest struct {
+	Name     string `json:"name"`
+	Email    string `json:"email" binding:"omitempty,email"`
+	Role     string `json:"role" binding:"omitempty,oneof=admin user"`
+	IsActive *bool  `json:"is_active"`
+}
+
 
 //Schemas login
 type LoginRequest struct {
@@ -18,3 +26,4 @@ type LoginRequest struct {
 type LoginResponse struct {
 	Token string `json:"token"`
 }
+

@@ -16,6 +16,5 @@ type User struct {
 	Name     string `gorm:"type:varchar(100);not null" json:"name"`
 	Email    string `gorm:"type:varchar(100);uniqueIndex;not null" json:"email"`
 	Password string `gorm:"type:varchar(255);not null" json:"-"` // O json:"-" esconde a senha nas respostas da API
-	Role     string `gorm:"type:varchar(20);default:'user'" json:"role"` // 'admin' ou 'user'
-	IsActive bool   `gorm:"default:true" json:"is_active"`
+	Role     string `gorm:"type:varchar(20);default:'user'" json:"role"`
 }

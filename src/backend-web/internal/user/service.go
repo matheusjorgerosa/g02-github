@@ -18,31 +18,8 @@ import (
 
 type UserService struct{}
 
-func (s *UserService) CreateUser(name, email, password, role string) (*User, error) {
-	// Criptografa a senha
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, err
-	}
-
-	//Criar a instância com as info
-	user := User{
-		Name:     name,
-		Email:    email,
-		Password: string(hashedPassword),
-		Role:     role,
-	}
-
-	// Salvar no banco
-	result := database.DB.Create(&user)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-
-	return &user, nil
-}
-
-
+//funções públicas
+//Login
 func (s *UserService) Login(email, password string) (string, error) {
 	var user User
 	//Busca o usuário pelo e-mail
@@ -65,6 +42,31 @@ func (s *UserService) Login(email, password string) (string, error) {
 
 	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 }
+
+// ADM funcions
+//cria usuário
+func (s *UserService) CreateUser(name, email, password, role string) (*User, error) {
+	// Criptografa a senha
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+	user := User{
+		Name:     name,
+		Email:    email,
+		Password: string(hashedPassword),
+		Role:     role,
+	}
+
+	result := database.DB.Create(&user)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &user, nil
+}
+
+//deleta usuário
 func (s *UserService) DeleteUser(id string) error {
     return database.DB.Transaction(func(tx *gorm.DB) error {
         var user User
@@ -86,3 +88,30 @@ func (s *UserService) DeleteUser(id string) error {
         return nil
     })
 }
+
+//lista usuários
+func (s *UserService) ListUsers() ([]User, error) {
+    var users []User
+    result := database.DB.Select("id", "name", "email", "role").Find(&users)
+    if result.Error != nil {
+        logger.Error("Erro ao listar usuários no banco", result.Error)
+        return nil, result.Error
+    }
+    return users, nil
+}
+
+//Atualiza informações
+func (s *UserService) AdminUpdateUser(id string, data map[string]interface{}) error {
+	var user User
+	if err := database.DB.First(&user, id).Error; err != nil {
+		return fmt.Errorf("usuário não encontrado")
+	}
+	result := database.DB.Model(&user).Updates(data)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+

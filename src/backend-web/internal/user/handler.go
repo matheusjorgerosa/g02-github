@@ -51,7 +51,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 // Login godoc
 // @Summary      Realizar login
 // @Description  Autentica o usuário e retorna um token JWT
-// @Tags         Auth
+// @Tags         Public
 // @Accept       json
 // @Produce      json
 // @Param        request  body      LoginRequest  true  "Credenciais de login"
@@ -102,6 +102,63 @@ func (h *UserHandler) DeleteUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Usuário deletado com sucesso"})
 }
 
+// ListUsers godoc
+// @Summary      Listar todos os usuários
+// @Description  Retorna uma lista de todos os usuários ativos no sistema. Requer privilégios de administrador.
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {array}   User
+// @Failure      401  {object}  map[string]string
+// @Failure      403  {object}  map[string]string
+// @Router       /admin/users [get]
+func (h *UserHandler) ListUsers(c *gin.Context) {
+    users, err := h.service.ListUsers()
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao recuperar lista de usuários"})
+        return
+    }
+
+    c.JSON(http.StatusOK, users)
+}
+
+// AdminUpdateUser godoc
+// @Summary      Atualizar qualquer usuário (Admin)
+// @Description  Permite alterar nome, e-mail ou cargo de um usuário via ID.
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id       path      int                    true  "ID do Usuário"
+// @Param        request  body      AdminUpdateUserRequest true  "Campos a atualizar"
+// @Success      200      {object}  map[string]string
+// @Router       /admin/users/{id} [put]
+func (h *UserHandler) AdminUpdateUser(c *gin.Context) {
+	id := c.Param("id")
+	var req AdminUpdateUserRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos ou cargo inexistente"})
+		return
+	}
+
+	updates := make(map[string]interface{})
+	if req.Name != "" { updates["name"] = req.Name }
+	if req.Email != "" { updates["email"] = req.Email }
+	if req.Role != "" { updates["role"] = req.Role }
+	if req.IsActive != nil { updates["is_active"] = *req.IsActive }
+
+	if err := h.service.AdminUpdateUser(id, updates); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Usuário atualizado com sucesso"})
+}
+
+
+//handler para formatação de erros
 func translateValidationError(err error) string {
 	errStr := err.Error()
 
