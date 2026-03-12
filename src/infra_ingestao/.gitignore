@@ -1,0 +1,9 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+.terraform.lock.hcl
+credentials.json
+*.auto.tfvars
+google-cloud-sdk/
+terraform.tfvars
