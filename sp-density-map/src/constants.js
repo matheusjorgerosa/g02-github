@@ -20,8 +20,10 @@ export const T = {
     skipToContent: 'Pular para o conteúdo',
     expandMap: 'Expandir mapa para tela cheia', minimizeMap: 'Minimizar mapa',
     view2D: 'Alternar para visão 2D', view3D: 'Alternar para visão 3D',
-    navDashboard: 'Ir para Dashboard', navCampaigns: 'Ir para Campanhas (indisponível)',
+    navDashboard: 'Ir para Dashboard', navCampaigns: 'Ir para Campanhas',
     navSettings: 'Abrir Configurações', navLogout: 'Sair do sistema',
+    campaignsTitle: 'Visualize as suas campanhas.',
+    darkMode: 'Modo Escuro',
   },
   en: {
     dashboard: 'Dashboard', campaigns: 'Campaigns', settings: 'Settings', logout: 'Logout',
@@ -43,14 +45,17 @@ export const T = {
     skipToContent: 'Skip to content',
     expandMap: 'Expand map to full screen', minimizeMap: 'Minimize map',
     view2D: 'Switch to 2D view', view3D: 'Switch to 3D view',
-    navDashboard: 'Go to Dashboard', navCampaigns: 'Go to Campaigns (unavailable)',
+    navDashboard: 'Go to Dashboard', navCampaigns: 'Go to Campaigns',
     navSettings: 'Open Settings', navLogout: 'Log out',
+    campaignsTitle: 'Visualize your campaigns.',
+    darkMode: 'Dark Mode',
   }
 };
 
 // ─── Default settings ──────────────────────────────────────────────────────────
 export const DEFAULT_SETTINGS = {
   colorblindMode: 'none',
+  darkMode: false,
   highContrast: false,
   fontSize: 'medium',
   fontFamily: 'inter',

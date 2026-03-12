@@ -13,6 +13,7 @@ import SettingsPanel from './components/SettingsPanel';
 import MapView from './components/MapView';
 import StatsGrid from './components/StatsGrid';
 import FilterPanel from './components/FilterPanel';
+import CampaignsPage from './components/CampaignsPage';
 
 // ─── App ───────────────────────────────────────────────────────────────────────
 function App() {
@@ -36,6 +37,7 @@ function App() {
     root.setAttribute('data-font-size', settings.fontSize);
     root.setAttribute('data-font-family', settings.fontFamily);
     root.setAttribute('data-high-contrast', settings.highContrast ? 'true' : 'false');
+    root.setAttribute('data-theme', settings.darkMode ? 'dark' : 'light');
     root.classList.toggle('reduced-motion', settings.reducedMotion);
   }, [settings]);
 
@@ -172,6 +174,8 @@ function App() {
 
         {activeTab === 'settings' ? (
           <SettingsPanel settings={settings} updateSetting={updateSetting} resetSettings={resetSettings} t={t} />
+        ) : activeTab === 'campaigns' ? (
+          <CampaignsPage t={t} language={settings.language} />
         ) : (
           <div className="venus-content-layout">
             <div className="venus-left-col">
@@ -186,6 +190,8 @@ function App() {
                 setIs2D={setIs2D}
                 t={t}
                 language={settings.language}
+                darkMode={settings.darkMode}
+                highContrast={settings.highContrast}
               />
 
               {!isMapExpanded && (
