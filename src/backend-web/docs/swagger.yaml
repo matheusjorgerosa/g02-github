@@ -1,0 +1,133 @@
+basePath: /
+definitions:
+  internal_user.CreateUserRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      role:
+        enum:
+        - admin
+        - user
+        type: string
+    required:
+    - email
+    - name
+    - password
+    - role
+    type: object
+  internal_user.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  internal_user.LoginResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  internal_user.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      is_active:
+        type: boolean
+      name:
+        type: string
+      role:
+        description: '''admin'' ou ''user'''
+        type: string
+      updated_at:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: admin@backendweb.com
+    name: Wander Suporte
+  description: API de gerenciamento de usuários com autenticação JWT.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Backend Web API
+  version: "1.0"
+paths:
+  /admin/users:
+    post:
+      consumes:
+      - application/json
+      description: Cria um usuário no sistema. Requer token de administrador.
+      parameters:
+      - description: Dados do novo usuário
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_user.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_user.User'
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Criar um novo usuário
+      tags:
+      - Admin
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Autentica o usuário e retorna um token JWT
+      parameters:
+      - description: Credenciais de login
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_user.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal_user.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Realizar login
+      tags:
+      - Auth
+securityDefinitions:
+  BearerAuth:
+    description: Digite 'Bearer ' seguido do seu token JWT
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
