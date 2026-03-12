@@ -2,12 +2,18 @@ package user
 
 import (
 	"os"
-    "github.com/golang-jwt/jwt/v5"
+
+	"github.com/golang-jwt/jwt/v5"
+	"go.uber.org/zap"
 
 	"backend-web/internal/platform/database"
-	"golang.org/x/crypto/bcrypt"
+	"backend-web/internal/platform/logger"
 	"errors"
 	"time"
+	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type UserService struct{}
@@ -58,4 +64,25 @@ func (s *UserService) Login(email, password string) (string, error) {
 	})
 
 	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+}
+func (s *UserService) DeleteUser(id string) error {
+    return database.DB.Transaction(func(tx *gorm.DB) error {
+        var user User
+        if err := tx.First(&user, id).Error; err != nil {
+            if errors.Is(err, gorm.ErrRecordNotFound) {
+                errNotFound := fmt.Errorf("usuário não encontrado")
+                logger.Error(errNotFound.Error(), errNotFound, zap.String("user_id", id))
+                return errNotFound
+            }
+            return err
+        }
+        if err := tx.Model(&user).Update("is_active", false).Error; err != nil {
+            return err
+        }
+
+        if err := tx.Delete(&user).Error; err != nil {
+            return err
+        }
+        return nil
+    })
 }

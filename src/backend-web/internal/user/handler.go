@@ -74,6 +74,34 @@ func (h *UserHandler) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, LoginResponse{Token: token})
 }
 
+// DeleteUser godoc
+// @Summary      Deletar um usuário
+// @Description  Remove um usuário do sistema (Soft Delete). Requer privilégios de administrador.
+// @Tags         Admin
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param        id   path      int  true  "ID do Usuário"
+// @Success      200  {object}  map[string]string
+// @Failure      401  {object}  map[string]string
+// @Failure      403  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Router       /admin/users/{id} [delete]
+func (h *UserHandler) DeleteUser(c *gin.Context) {
+	id := c.Param("id")
+
+	if err := h.service.DeleteUser(id); err != nil {
+		if err.Error() == "usuário não encontrado" {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar usuário"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Usuário deletado com sucesso"})
+}
+
 func translateValidationError(err error) string {
 	errStr := err.Error()
 

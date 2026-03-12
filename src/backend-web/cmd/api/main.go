@@ -63,7 +63,7 @@ func main() {
 	protected.Use(middleware.AuthMiddleware()) 
 	{
 		protected.POST("/users", middleware.AdminOnly(), userHandler.CreateUser)
-		
+		protected.DELETE("/users/:id", middleware.AdminOnly(), userHandler.DeleteUser)
 	}
 
 	if err := r.Run(":8080"); err != nil {
