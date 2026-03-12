@@ -1,4 +1,4 @@
-// ─── Translations ──────────────────────────────────────────────────────────────
+
 export const T = {
   pt: {
     dashboard: 'Dashboard', campaigns: 'Campanhas', settings: 'Ajustes', logout: 'Sair',
@@ -52,18 +52,18 @@ export const T = {
   }
 };
 
-// ─── Default settings ──────────────────────────────────────────────────────────
+
 export const DEFAULT_SETTINGS = {
   colorblindMode: 'none',
   darkMode: false,
   highContrast: false,
-  fontSize: 'medium',
+  fontSize: 'large',
   fontFamily: 'inter',
   reducedMotion: false,
   language: 'pt',
 };
 
-// ─── Color palettes per colorblind mode ───────────────────────────────────────
+
 export const COLOR_RANGES = {
   none:   [[255,230,210],[255,180,130],[255,130,60],[255,85,0],[200,65,0],[150,45,0]],
   deutan: [[255,247,188],[254,227,145],[254,196,79],[236,112,20],[204,76,2],[140,45,4]],
@@ -78,7 +78,7 @@ export const CHART_COLORS = {
   tritan: { primary: '#2CA25F', secondary: '#99D8C9' },
 };
 
-// ─── Filter config ─────────────────────────────────────────────────────────────
+
 export const FILTER_CONFIG = {
   idade: ['18-19', '20-29', '30-39', '40-49', '50-59', '60-69', '70-79', '80+'],
   genero: [{ id: 'M', label: 'Masculino' }, { id: 'F', label: 'Feminino' }],

@@ -15,20 +15,32 @@ import StatsGrid from './components/StatsGrid';
 import FilterPanel from './components/FilterPanel';
 import CampaignsPage from './components/CampaignsPage';
 
-// ─── App ───────────────────────────────────────────────────────────────────────
+const COOKIE_KEY = 'venus-settings';
+
+function getCookie() {
+  try {
+    const match = document.cookie.split('; ').find(r => r.startsWith(COOKIE_KEY + '='));
+    return match ? JSON.parse(decodeURIComponent(match.split('=').slice(1).join('='))) : null;
+  } catch { return null; }
+}
+
+function setCookie(value) {
+  const expires = new Date();
+  expires.setFullYear(expires.getFullYear() + 1);
+  document.cookie = `${COOKIE_KEY}=${encodeURIComponent(JSON.stringify(value))};expires=${expires.toUTCString()};path=/;SameSite=Lax`;
+}
+
 function App() {
   const [settings, setSettings] = useState(() => {
-    try {
-      const saved = localStorage.getItem('venus-settings');
-      return saved ? { ...DEFAULT_SETTINGS, ...JSON.parse(saved) } : DEFAULT_SETTINGS;
-    } catch { return DEFAULT_SETTINGS; }
+    const saved = getCookie();
+    return saved ? { ...DEFAULT_SETTINGS, ...saved } : DEFAULT_SETTINGS;
   });
 
   const updateSetting = (key, value) => setSettings(prev => ({ ...prev, [key]: value }));
   const resetSettings = () => setSettings(DEFAULT_SETTINGS);
 
   useEffect(() => {
-    try { localStorage.setItem('venus-settings', JSON.stringify(settings)); } catch {}
+    setCookie(settings);
   }, [settings]);
 
   useEffect(() => {
@@ -167,10 +179,12 @@ function App() {
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} t={t} language={settings.language} />
 
       <main className="venus-main" id="main-content" tabIndex="-1">
-        <header className="venus-header">
-          <p className="venus-greeting">{t.hello}</p>
-          <h1 className="venus-title">{t.dashboardTitle}</h1>
-        </header>
+        {activeTab === 'dashboard' && (
+          <header className="venus-header">
+            <p className="venus-greeting">{t.hello}</p>
+            <h1 className="venus-title">{t.dashboardTitle}</h1>
+          </header>
+        )}
 
         {activeTab === 'settings' ? (
           <SettingsPanel settings={settings} updateSetting={updateSetting} resetSettings={resetSettings} t={t} />

@@ -28,10 +28,10 @@ function Sidebar({ activeTab, setActiveTab, t, language }) {
         </button>
 
         <button
-          className="venus-nav-item disabled"
-          disabled
+          className={`venus-nav-item ${activeTab === 'campaigns' ? 'active' : ''}`}
+          onClick={() => setActiveTab('campaigns')}
           aria-label={t.navCampaigns}
-          aria-disabled="true"
+          aria-current={activeTab === 'campaigns' ? 'page' : undefined}
         >
           <span className="nav-icon"><Icons.Campaign /></span>
           <span className="nav-label">{t.campaigns}</span>

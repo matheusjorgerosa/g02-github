@@ -53,7 +53,6 @@ function SettingsPanel({ settings, updateSetting, resetSettings, t }) {
       </div>
 
       <div className="settings-grid">
-        {/* Language */}
         <section className="settings-section" aria-labelledby="sec-language">
           <h2 className="settings-section-title" id="sec-language">
             <span className="settings-section-icon"><Icons.Globe /></span>{t.language}
@@ -64,7 +63,6 @@ function SettingsPanel({ settings, updateSetting, resetSettings, t }) {
           ]} />
         </section>
 
-        {/* Colorblind */}
         <section className="settings-section" aria-labelledby="sec-colorblind">
           <h2 className="settings-section-title" id="sec-colorblind"><span className="settings-section-icon"><Icons.Eye /></span>{t.colorblindMode}</h2>
           <p className="settings-desc-block">
@@ -86,7 +84,16 @@ function SettingsPanel({ settings, updateSetting, resetSettings, t }) {
           </div>
         </section>
 
-        {/* High Contrast */}
+        <section className="settings-section" aria-labelledby="sec-darkmode">
+          <h2 className="settings-section-title" id="sec-darkmode"><span className="settings-section-icon"><Icons.Contrast /></span>{t.darkMode}</h2>
+          <p className="settings-desc-block">
+            {settings.language === 'pt'
+              ? 'Ativa um tema escuro suave, ideal para uso noturno ou ambientes com pouca luz.'
+              : 'Enables a soft dark theme, ideal for nighttime use or low-light environments.'}
+          </p>
+          <Toggle label={t.darkMode} settingKey="darkMode" value={settings.darkMode} />
+        </section>
+
         <section className="settings-section" aria-labelledby="sec-contrast">
           <h2 className="settings-section-title" id="sec-contrast"><span className="settings-section-icon"><Icons.Contrast /></span>{t.highContrast}</h2>
           <p className="settings-desc-block">
@@ -97,7 +104,6 @@ function SettingsPanel({ settings, updateSetting, resetSettings, t }) {
           <Toggle label={t.highContrast} settingKey="highContrast" value={settings.highContrast} />
         </section>
 
-        {/* Font Size */}
         <section className="settings-section" aria-labelledby="sec-fontsize">
           <h2 className="settings-section-title" id="sec-fontsize"><span className="settings-section-icon"><Icons.Type /></span>{t.fontSize}</h2>
           <RadioGroup label={t.fontSize} name="fontSize" value={settings.fontSize} options={[
@@ -111,7 +117,6 @@ function SettingsPanel({ settings, updateSetting, resetSettings, t }) {
           </p>
         </section>
 
-        {/* Font Family */}
         <section className="settings-section" aria-labelledby="sec-fontfamily">
           <h2 className="settings-section-title" id="sec-fontfamily"><span className="settings-section-icon"><Icons.Font /></span>{t.fontFamily}</h2>
           <p className="settings-desc-block">
@@ -127,7 +132,6 @@ function SettingsPanel({ settings, updateSetting, resetSettings, t }) {
           ]} />
         </section>
 
-        {/* Reduce Motion */}
         <section className="settings-section" aria-labelledby="sec-motion">
           <h2 className="settings-section-title" id="sec-motion"><span className="settings-section-icon"><Icons.Zap /></span>{t.reducedMotion}</h2>
           <p className="settings-desc-block">

@@ -1,12 +1,45 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import DeckGL from '@deck.gl/react';
 import { Map } from 'react-map-gl/maplibre';
 import Icons from './Icons';
 import { formatNumber } from '../constants';
 
-function MapView({ viewState, setViewState, layers, hoverInfo, isMapExpanded, setIsMapExpanded, is2D, setIs2D, t, language }) {
+const MAP_STYLE_LIGHT = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
+const MAP_STYLE_DARK  = 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json';
+
+function MapView({ viewState, setViewState, layers, hoverInfo, isMapExpanded, setIsMapExpanded, is2D, setIs2D, t, language, darkMode, highContrast }) {
+  const mapStyle = (darkMode || highContrast) ? MAP_STYLE_DARK : MAP_STYLE_LIGHT;
+
+  const containerRef = useRef(null);
+  const [deckDims, setDeckDims] = useState({ width: '100%', height: '100%' });
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const measure = () => {
+      setDeckDims({ width: container.offsetWidth, height: container.offsetHeight });
+    };
+
+    measure();
+
+    const mainEl = container.closest('.venus-main');
+    const onTransitionEnd = (e) => {
+      if (e.propertyName === 'padding-left') measure();
+    };
+    mainEl?.addEventListener('transitionend', onTransitionEnd);
+    window.addEventListener('resize', measure);
+
+    return () => {
+      mainEl?.removeEventListener('transitionend', onTransitionEnd);
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
+
   return (
-    <div className={`venus-map-container ${isMapExpanded ? 'expanded' : ''}`}
+    <div
+      ref={containerRef}
+      className={`venus-map-container ${isMapExpanded ? 'expanded' : ''}`}
       role="region"
       aria-label={language === 'pt' ? 'Mapa de densidade' : 'Density map'}
     >
@@ -35,10 +68,10 @@ function MapView({ viewState, setViewState, layers, hoverInfo, isMapExpanded, se
           onViewStateChange={({ viewState }) => setViewState(viewState)}
           controller={true}
           layers={layers}
-          width="100%"
-          height="100%"
+          width={deckDims.width}
+          height={deckDims.height}
         >
-          <Map mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" reuseMaps />
+          <Map mapStyle={mapStyle} reuseMaps />
         </DeckGL>
       </div>
 
