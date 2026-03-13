@@ -36,7 +36,7 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 
 	user, err := h.service.CreateUser(req.Name, req.Email, req.Password, req.Role)
 	if err != nil {
-		if strings.Contains(err.Error(), "duplicate key") {
+		if strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "UNIQUE constraint failed") {
 			c.JSON(http.StatusConflict, gin.H{"error": "Este e-mail já está cadastrado"})
 			return
 		}
