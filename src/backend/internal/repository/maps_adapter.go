@@ -27,7 +27,7 @@ func (g *GoogleMapsAdapter) ReverseGeocode(ctx context.Context, lat, lng float64
 	resp, err := g.client.ReverseGeocode(ctx, req)
 	if err != nil || len(resp) == 0 {
 		return "Rua não encontrada", nil
-	}
+	} 
 
 	for _, result := range resp[0].AddressComponents {
 		for _, t := range result.Types {
