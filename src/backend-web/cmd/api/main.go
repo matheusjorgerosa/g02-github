@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
-	_ "backend-web/docs" 
+	_ "backend-web/docs"
     "github.com/swaggo/gin-swagger"
     "github.com/swaggo/files"
 )
@@ -37,7 +37,7 @@ func main() {
 	// Inicializa serviços base
 	logger.Init()
 	defer logger.Sync()
-	
+
 	database.Init()
 
 	// Migrações e Instâncias
@@ -60,8 +60,8 @@ func main() {
 
 	// Rotas protegidas do admin
 	protected := r.Group("/admin")
-	protected.Use(middleware.AuthMiddleware()) 
-	{	
+	protected.Use(middleware.AuthMiddleware())
+	{
 		protected.GET("/users",middleware.AdminOnly(), userHandler.ListUsers)
 		protected.POST("/users", middleware.AdminOnly(), userHandler.CreateUser)
 		protected.PUT("/users/:id",middleware.AdminOnly() ,userHandler.AdminUpdateUser)
@@ -71,4 +71,5 @@ func main() {
 	if err := r.Run(":8080"); err != nil {
 		logger.Fatal("Falha ao iniciar o servidor", err)
 	}
+	
 }
