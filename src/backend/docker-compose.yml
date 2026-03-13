@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./internal/.env
+    volumes:
+      - ./google-creds.json:/root/google-creds.json 
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/google-creds.json

@@ -30,3 +30,16 @@ terraform.tfvars
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
+
+/backend
+/bin/
+
+*.test
+*.out
+
+*.json
+.env
+.gcp_credentials
+
+.vscode/
+.idea/
