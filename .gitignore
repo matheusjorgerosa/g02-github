@@ -12,6 +12,7 @@ build
 
 # Misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -26,20 +27,18 @@ src/mock_api_claro/data/fluxo_diario_20260106.csv
 venv
 __pycache__
 
+
+config.h
+
 terraform.tfvars
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
 
-/backend
-/bin/
-
-*.test
-*.out
-
-*.json
+google-creds.json
 .env
-.gcp_credentials
+
 
 .vscode/
 .idea/
+

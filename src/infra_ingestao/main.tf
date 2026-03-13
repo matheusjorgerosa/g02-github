@@ -525,7 +525,27 @@ resource "google_bigquery_table" "ingestao" {
 
   schema = jsonencode([
     {
-      name = "event_data"
+      name = "latitude"
+      type = "FLOAT"
+      mode = "NULLABLE"
+    },
+    {
+      name = "longitude"
+      type = "FLOAT"
+      mode = "NULLABLE"
+    },
+    {
+      name = "idade"
+      type = "INTEGER"
+      mode = "NULLABLE"
+    },
+    {
+      name = "classe_social"
+      type = "STRING"
+      mode = "NULLABLE"
+    },
+    {
+      name = "genero"
       type = "STRING"
       mode = "NULLABLE"
     },

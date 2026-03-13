@@ -17,6 +17,8 @@ from pyiceberg.types import (
     NestedField,
     StringType,
     TimestampType,
+    DoubleType,
+    IntegerType,
 )
 from pyiceberg.partitioning import PartitionSpec, PartitionField
 from pyiceberg.transforms import DayTransform
@@ -43,14 +45,18 @@ TABLE_IDENTIFIER = "default.ingestao"
 BQ_TABLE = f"{GCP_PROJECT}.trusted.ingestao"
 
 ICEBERG_SCHEMA = Schema(
-    NestedField(1, "event_data", StringType(), required=False),
-    NestedField(2, "ingested_at", TimestampType(), required=True),
-    NestedField(3, "source_file", StringType(), required=True),
+    NestedField(1, "latitude", DoubleType(), required=False),
+    NestedField(2, "longitude", DoubleType(), required=False),
+    NestedField(3, "idade", IntegerType(), required=False),
+    NestedField(4, "classe_social", StringType(), required=False),
+    NestedField(5, "genero", StringType(), required=False),
+    NestedField(6, "ingested_at", TimestampType(), required=True),
+    NestedField(7, "source_file", StringType(), required=True),
 )
 
 PARTITION_SPEC = PartitionSpec(
     PartitionField(
-        source_id=2,
+        source_id=6,  # ingested_at
         field_id=1000,
         transform=DayTransform(),
         name="ingested_day",
@@ -220,15 +226,45 @@ def transform_and_write(records: list[dict], source_file: str):
     now = datetime.utcnow()
 
     arrow_schema = pa.schema([
-        pa.field("event_data", pa.string(), nullable=True),
+        pa.field("latitude", pa.float64(), nullable=True),
+        pa.field("longitude", pa.float64(), nullable=True),
+        pa.field("idade", pa.int32(), nullable=True),
+        pa.field("classe_social", pa.string(), nullable=True),
+        pa.field("genero", pa.string(), nullable=True),
         pa.field("ingested_at", pa.timestamp("us"), nullable=False),
         pa.field("source_file", pa.string(), nullable=False),
     ])
 
+    def _to_float(val):
+        try:
+            return float(val) if val is not None else None
+        except (TypeError, ValueError):
+            return None
+
+    def _to_int(val):
+        try:
+            return int(val) if val is not None else None
+        except (TypeError, ValueError):
+            return None
+
     arrow_table = pa.table(
         {
-            "event_data": pa.array(
-                [json.dumps(r) for r in records], type=pa.string()
+            "latitude": pa.array(
+                [_to_float(r.get("latitude")) for r in records], type=pa.float64()
+            ),
+            "longitude": pa.array(
+                [_to_float(r.get("longitude")) for r in records], type=pa.float64()
+            ),
+            "idade": pa.array(
+                [_to_int(r.get("idade")) for r in records], type=pa.int32()
+            ),
+            "classe_social": pa.array(
+                [str(r["classe_social"]) if r.get("classe_social") is not None else None for r in records],
+                type=pa.string(),
+            ),
+            "genero": pa.array(
+                [str(r["genero"]) if r.get("genero") is not None else None for r in records],
+                type=pa.string(),
             ),
             "ingested_at": pa.array([now] * len(records), type=pa.timestamp("us")),
             "source_file": pa.array(

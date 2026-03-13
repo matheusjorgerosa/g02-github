@@ -14,6 +14,43 @@ paths:
       operationId: ingest
       x-google-backend:
         address: ${cloud_run_url}/ingest
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: payload
+          required: true
+          schema:
+            type: object
+            required:
+              - latitude
+              - longitude
+              - idade
+              - classe_social
+              - genero
+            properties:
+              latitude:
+                type: number
+                format: double
+                description: Latitude geográfica do registro
+                example: -23.5505
+              longitude:
+                type: number
+                format: double
+                description: Longitude geográfica do registro
+                example: -46.6333
+              idade:
+                type: integer
+                description: Idade do indivíduo
+                example: 30
+              classe_social:
+                type: string
+                description: "Classe social (ex: A, B, C, D, E)"
+                example: B
+              genero:
+                type: string
+                description: "Gênero do indivíduo (ex: M, F, NB)"
+                example: F
       responses:
         "202":
           description: Mensagem aceita
