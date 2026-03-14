@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/api/iterator"
-	"backend/internal/models"
+	"backend-web/internal/flow/models"
 )
 
 func (r *FlowRepository) GetNeighborhoodRanking(ctx context.Context, filters models.FilterPayload, limit int) ([]models.RankingResponse, error) {

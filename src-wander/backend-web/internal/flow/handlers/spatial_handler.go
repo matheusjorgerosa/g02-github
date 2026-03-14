@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 	"github.com/gin-gonic/gin"
-	"backend/internal/models"
+	"backend-web/internal/flow/models"
 )
 
 // HandleSpatialData godoc

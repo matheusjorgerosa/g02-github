@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"google.golang.org/api/iterator"
-	"backend/internal/models"
+	"backend-web/internal/flow/models"
 )
 
 func (r *FlowRepository) GetSpatialData(ctx context.Context, filters models.FilterPayload) ([]models.SpatialResponse, error) {

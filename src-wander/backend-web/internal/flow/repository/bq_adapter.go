@@ -3,7 +3,7 @@ package repository
 import (
 	"context"
 	"cloud.google.com/go/bigquery"
-	"backend/internal/models"
+	"backend-web/internal/flow/models"
 )
 
 type BigQueryAdapter struct {
