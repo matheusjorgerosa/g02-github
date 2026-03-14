@@ -10,12 +10,12 @@ Ao longo do desenvolvimento da Sprint 3, o frontend do Dashboard VENUS passou po
 
 Os principais problemas que motivaram a refatoração foram:
 
-- **Acoplamento excessivo:** qualquer alteração em um gráfico, no mapa ou nos filtros exigia navegar por centenas de linhas de código sem separação clara de responsabilidades.
-- **Ausência de acessibilidade:** a versão anterior não possuía atributos ARIA, navegação por teclado nem suporte a tecnologias assistivas.
-- **Falta de personalização:** não havia suporte a temas (dark mode, alto contraste) nem opções de ajuste tipográfico.
-- **Escalabilidade:** adicionar novas páginas (ex: tela de Campanhas) ao monólito seria custoso e propenso a regressões.
+- Acoplamento excessivo: qualquer alteração em um gráfico, no mapa ou nos filtros exigia navegar por centenas de linhas de código sem separação clara de responsabilidades.
+- Ausência de acessibilidade: a versão anterior não possuía atributos ARIA, navegação por teclado nem suporte a tecnologias assistivas.
+- Falta de personalização: não havia suporte a temas (dark mode, alto contraste) nem opções de ajuste tipográfico.
+- Escalabilidade: adicionar novas páginas (ex: tela de Campanhas) ao monólito seria custoso e propenso a regressões.
 
-A refatoração adotou a **separação por componentes responsáveis**, onde cada arquivo cuida exclusivamente de uma fatia da interface, e um `App.jsx` enxuto atua como orquestrador de estado.
+A refatoração adotou a separação por componentes responsáveis, onde cada arquivo cuida exclusivamente de uma fatia da interface, e um `App.jsx` enxuto atua como orquestrador de estado.
 
 ---
 
@@ -46,12 +46,12 @@ src/
 
 Centraliza todas as constantes da aplicação, eliminando strings espalhadas pelo código:
 
-- **`T`**: objeto de internacionalização com todas as chaves de texto em Português (`pt`) e Inglês (`en`).
-- **`DEFAULT_SETTINGS`**: valores padrão de acessibilidade (ex: `darkMode: false`, `fontSize: 'large'`, `fontFamily: 'inter'`).
-- **`COLOR_RANGES`** e **`CHART_COLORS`**: paletas adaptadas para quatro modos visuais — padrão, deuteranopia, protanopia e tritanopia.
-- **`FILTER_CONFIG`** e **`INITIAL_FILTERS`**: definição das opções e estado inicial dos filtros demográficos.
-- **`INITIAL_VIEW_STATE`**: posição inicial do mapa centrada em São Paulo.
-- **Helpers** `formatNumber` e `renderPieLabel`: funções utilitárias reutilizadas nos gráficos.
+- `T`: objeto de internacionalização com todas as chaves de texto em Português (`pt`) e Inglês (`en`).
+- `DEFAULT_SETTINGS`: valores padrão de acessibilidade (ex: `darkMode: false`, `fontSize: 'large'`, `fontFamily: 'inter'`).
+- `COLOR_RANGES` e `CHART_COLORS`: paletas adaptadas para quatro modos visuais — padrão, deuteranopia, protanopia e tritanopia.
+- `FILTER_CONFIG` e `INITIAL_FILTERS`: definição das opções e estado inicial dos filtros demográficos.
+- `INITIAL_VIEW_STATE`: posição inicial do mapa centrada em São Paulo.
+- Helpers `formatNumber` e `renderPieLabel`: funções utilitárias reutilizadas nos gráficos.
 
 ---
 
@@ -59,11 +59,11 @@ Centraliza todas as constantes da aplicação, eliminando strings espalhadas pel
 
 Responsável por:
 
-- Gerenciar o **estado global** da aplicação: aba ativa, dados carregados, filtros, estado do mapa e configurações de acessibilidade.
-- **Persistir preferências** em cookie (`venus-settings`) com validade de 1 ano, para que as configurações do usuário sobrevivam a recarregamentos de página.
-- **Aplicar temas** via atributos no elemento `<html>`: `data-theme`, `data-colorblind`, `data-font-size`, `data-font-family`, `data-high-contrast` e a classe `reduced-motion`. O CSS reage a esses atributos para aplicar as transformações visuais corretas sem `JavaScript` extra.
-- **Carregar e processar o CSV** de dados geoespaciais via `PapaParse`, realizando o cruzamento demográfico com `useMemo` para evitar recalculos desnecessários.
-- **Renderizar** o componente correto conforme a aba selecionada (`dashboard`, `campaigns`, `settings`).
+- Gerenciar o estado global da aplicação: aba ativa, dados carregados, filtros, estado do mapa e configurações de acessibilidade.
+- Persistir preferências em cookie (`venus-settings`) com validade de 1 ano, para que as configurações do usuário sobrevivam a recarregamentos de página.
+- Aplicar temas via atributos no elemento `<html>`: `data-theme`, `data-colorblind`, `data-font-size`, `data-font-family`, `data-high-contrast` e a classe `reduced-motion`. O CSS reage a esses atributos para aplicar as transformações visuais corretas sem `JavaScript` extra.
+- Carregar e processar o CSV de dados geoespaciais via `PapaParse`, realizando o cruzamento demográfico com `useMemo` para evitar recalculos desnecessários.
+- Renderizar o componente correto conforme a aba selecionada (`dashboard`, `campaigns`, `settings`).
 
 ---
 
@@ -79,7 +79,7 @@ Todos os ícones possuem `aria-hidden="true"` e `focusable="false"`, garantindo 
 
 Barra lateral fixa que exibe o logo VENUS e os botões de navegação entre as abas da aplicação.
 
-**Destaques de acessibilidade:**
+Destaques de acessibilidade:
 - Elemento `<aside>` com `role="navigation"` e `aria-label` descritivo.
 - Cada botão de navegação possui `aria-label` com descrição de destino e `aria-current="page"` quando a aba está ativa, permitindo que leitores de tela anunciem a página atual.
 
@@ -89,10 +89,10 @@ Barra lateral fixa que exibe o logo VENUS e os botões de navegação entre as a
 
 Renderiza o mapa hexagonal 3D usando `deck.gl` (HexagonLayer) sobre um mapa base via `MapLibre GL`. O estilo do mapa base alterna automaticamente entre tema claro (`positron`) e escuro (`dark-matter`) conforme o estado de `darkMode` ou `highContrast`.
 
-**Funcionalidades:**
-- **Expansão de tela cheia:** botão que alterna o mapa para ocupar toda a área de conteúdo e um `ResizeObserver` que recalcula as dimensões do canvas do deck.gl ao final da transição CSS.
-- **Alternância 2D/3D:** controla o `pitch` do mapa entre visão isométrica (45°) e visão plana (0°), com ícones e `aria-pressed` para indicar o estado atual.
-- **Tooltip acessível:** informações de impacto ao hover exibidas em um elemento com `role="tooltip"` e `aria-live="polite"`, lido automaticamente por leitores de tela ao surgir.
+Funcionalidades:
+- Expansão de tela cheia: botão que alterna o mapa para ocupar toda a área de conteúdo e um `ResizeObserver` que recalcula as dimensões do canvas do deck.gl ao final da transição CSS.
+- Alternância 2D/3D: controla o `pitch` do mapa entre visão isométrica (45°) e visão plana (0°), com ícones e `aria-pressed` para indicar o estado atual.
+- Tooltip acessível: informações de impacto ao hover exibidas em um elemento com `role="tooltip"` e `aria-live="polite"`, lido automaticamente por leitores de tela ao surgir.
 
 ---
 
@@ -100,11 +100,11 @@ Renderiza o mapa hexagonal 3D usando `deck.gl` (HexagonLayer) sobre um mapa base
 
 Grade de cartões com gráficos interativos construídos com `Recharts`, exibindo:
 
-- **Público Total:** valor absoluto de impressões filtradas e o horário de pico estimado.
-- **Fluxo 24h:** gráfico de área mostrando a distribuição de impressões ao longo do dia.
-- **Distribuição por Bairro:** gráfico de barras horizontais com os top bairros por volume de público.
-- **Classe Social:** gráfico de barras verticais com a distribuição por classe econômica.
-- **Gênero:** gráfico de rosca (donut) com a proporção masculino/feminino.
+- Público Total: valor absoluto de impressões filtradas e o horário de pico estimado.
+- Fluxo 24h: gráfico de área mostrando a distribuição de impressões ao longo do dia.
+- Distribuição por Bairro: gráfico de barras horizontais com os top bairros por volume de público.
+- Classe Social: gráfico de barras verticais com a distribuição por classe econômica.
+- Gênero: gráfico de rosca (donut) com a proporção masculino/feminino.
 
 Todos os cartões utilizam `role="article"` e `aria-label` descritivos. As cores dos gráficos são fornecidas pelo `chartColors` derivado do modo daltônico selecionado, garantindo legibilidade universal.
 
@@ -114,11 +114,11 @@ Todos os cartões utilizam `role="article"` e `aria-label` descritivos. As cores
 
 Painel lateral direito com checkboxes para filtrar o público exibido no mapa e nos gráficos por:
 
-- **Faixa Etária:** 18-19, 20-29, 30-39, 40-49, 50-59, 60-69, 70-79, 80+
-- **Gênero:** Masculino, Feminino
-- **Classe Social:** A, B1, B2, C1, C2, DE
-- **Horários (24h):** horas 0 a 23
-- **Flag "Apenas Bins Relevantes":** oculta hexágonos com valor calculado abaixo de um limiar mínimo.
+- Faixa Etária: 18-19, 20-29, 30-39, 40-49, 50-59, 60-69, 70-79, 80+
+- Gênero: Masculino, Feminino
+- Classe Social: A, B1, B2, C1, C2, DE
+- Horários (24h): horas 0 a 23
+- Flag "Apenas Bins Relevantes": oculta hexágonos com valor calculado abaixo de um limiar mínimo.
 
 Cada grupo de checkboxes utiliza `role="group"` com `aria-labelledby` apontando para o rótulo visual do grupo.
 
@@ -138,7 +138,7 @@ Nova tela adicionada nesta sprint (detalhada na seção 6 deste documento).
 
 ## 4. Suporte a Dark Mode
 
-O dark mode foi implementado de forma **puramente via CSS** — sem troca de componentes nem lógica JavaScript complexa.
+O dark mode foi implementado de forma puramente via CSS — sem troca de componentes nem lógica JavaScript complexa.
 
 ### Como funciona
 
@@ -184,11 +184,11 @@ A preferência de dark mode é salva no cookie `venus-settings` e restaurada na 
 
 ## 5. Acessibilidade — `SettingsPanel`
 
-O painel de configurações foi inteiramente projetado para conformidade com as diretrizes **WCAG 2.1 AA**. As funcionalidades disponíveis são:
+O painel de configurações foi inteiramente projetado para conformidade com as diretrizes WCAG 2.1 AA. As funcionalidades disponíveis são:
 
 ### 5.1. Idioma
 
-Alterna toda a interface entre **Português (BR)** e **English**. A tradução é gerenciada pelo objeto `T` em `constants.js` e propagada via props `t` e `language`.
+Alterna toda a interface entre Português (BR) e English. A tradução é gerenciada pelo objeto `T` em `constants.js` e propagada via props `t` e `language`.
 
 ### 5.2. Modo Daltônico
 
@@ -213,7 +213,7 @@ Define `data-high-contrast="true"` no `<html>`. O CSS aumenta o contraste entre 
 
 ### 5.5. Tamanho de Fonte
 
-Quatro opções: Pequena, Média, **Grande** (padrão), Extra Grande. Implementado via `data-font-size` e variáveis CSS `--font-size-base`.
+Quatro opções: Pequena, Média, Grande (padrão), Extra Grande. Implementado via `data-font-size` e variáveis CSS `--font-size-base`.
 
 ### 5.6. Família de Fonte
 
@@ -232,13 +232,13 @@ Adiciona a classe `reduced-motion` ao `<html>`. O CSS desativa transições, ani
 
 Além das configurações do painel, toda a aplicação recebeu marcação semântica:
 
-- **`role` e `aria-label`** em todas as regiões semânticas (`<aside>`, `<main>`, `<nav>`, `<section>`).
-- **`aria-current="page"`** nos botões de navegação ativos.
-- **`aria-pressed`** nos botões de toggle do mapa (expandir, 2D/3D).
-- **`aria-live="polite"`** no valor de público total e no tooltip do mapa, para que leitores de tela anunciem mudanças dinamicamente.
-- **`aria-modal="true"`** no modal de nova campanha.
-- **Todos os inputs** possuem `aria-label` explícito.
-- **`role="switch"`** nos toggles booleanos com `aria-checked` refletindo o estado.
+- `role` e `aria-label` em todas as regiões semânticas (`<aside>`, `<main>`, `<nav>`, `<section>`).
+- `aria-current="page"` nos botões de navegação ativos.
+- `aria-pressed` nos botões de toggle do mapa (expandir, 2D/3D).
+- `aria-live="polite"` no valor de público total e no tooltip do mapa, para que leitores de tela anunciem mudanças dinamicamente.
+- `aria-modal="true"` no modal de nova campanha.
+- Todos os inputs possuem `aria-label` explícito.
+- `role="switch"` nos toggles booleanos com `aria-checked` refletindo o estado.
 
 ### 5.9. Restaurar Padrões
 
@@ -248,7 +248,7 @@ Botão "Restaurar Padrões" que reinicia todas as configurações para o objeto 
 
 ## 6. Nova Funcionalidade: Tela de Campanhas
 
-A `CampaignsPage` é a principal adição de UX desta sprint. Ela pode ser acessada pelo item **Campanhas** na `Sidebar`.
+A `CampaignsPage` é a principal adição de UX desta sprint. Ela pode ser acessada pelo item Campanhas na `Sidebar`.
 
 ### 6.1. Visão Geral
 
@@ -258,29 +258,29 @@ A tela exibe uma listagem das campanhas publicitárias cadastradas, com possibil
 
 Cada cartão de campanha exibe:
 
-- **Nome** da campanha
-- **Status** com badge colorido: `Ativa` (verde), `Aguardando Início` (amarelo), `Finalizada` (cinza)
-- **Período** (data de início e fim)
-- **Número de locais** de exibição
-- **Impressões** totais com variação percentual
-- **Alcance** estimado com variação percentual
-- **Tags** de segmentação (faixa etária, classe social, gênero, horário)
+- Nome da campanha
+- Status com badge colorido: `Ativa` (verde), `Aguardando Início` (amarelo), `Finalizada` (cinza)
+- Período (data de início e fim)
+- Número de locais de exibição
+- Impressões totais com variação percentual
+- Alcance estimado com variação percentual
+- Tags de segmentação (faixa etária, classe social, gênero, horário)
 
 ### 6.3. Filtro por Aba
 
-Quatro abas de filtragem: **Todas**, **Ativas**, **Aguardando**, **Finalizadas**. A filtragem é puramente client-side via `useState` sobre os dados mock.
+Quatro abas de filtragem: Todas, Ativas, Aguardando, Finalizadas. A filtragem é puramente client-side via `useState` sobre os dados mock.
 
 ### 6.4. Modal de Nova Campanha
 
-Acessado pelo botão **"+ Nova Campanha"**, o modal coleta as seguintes informações organizadas em etapas:
+Acessado pelo botão "+ Nova Campanha", o modal coleta as seguintes informações organizadas em etapas:
 
-**Dados do Anunciante:**
+Dados do Anunciante:
 - Empresa, CNPJ, Responsável, E-mail
 
-**Dados da Campanha:**
+Dados da Campanha:
 - Nome, Descrição, Data de Início, Data de Fim
 
-**Segmentação de Público:**
+Segmentação de Público:
 - Faixa Etária (checkboxes múltiplos)
 - Gênero (checkboxes múltiplos)
 - Classe Social (checkboxes múltiplos)
