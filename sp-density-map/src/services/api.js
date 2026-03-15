@@ -36,6 +36,22 @@ export async function apiLogin(email, password) {
   return data;
 }
 
+// Faz cadastro público
+export async function apiSignup(name, email, password) {
+  const res = await fetch('/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name, email, password }),
+  });
+
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    throw new Error(data.error || 'Erro ao fazer cadastro');
+  }
+
+  return res.json();
+}
+
 // Fetch genérico que injeta o token JWT automaticamente
 export async function apiFetch(path, options = {}) {
   const token = getToken();

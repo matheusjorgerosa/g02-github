@@ -48,6 +48,39 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 	c.JSON(http.StatusCreated, user)
 }
 
+// Signup godoc
+// @Summary      Cadastro público de usuário
+// @Description  Cria um novo usuário com role "user" fixo
+// @Tags         Public
+// @Accept       json
+// @Produce      json
+// @Param        request  body      SignupRequest  true  "Dados do novo usuário"
+// @Success      201      {object}  User
+// @Failure      400      {object}  map[string]string
+// @Failure      409      {object}  map[string]string
+// @Router       /signup [post]
+func (h *UserHandler) Signup(c *gin.Context) {
+	var req SignupRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": translateValidationError(err)})
+		return
+	}
+
+	user, err := h.service.CreateUser(req.Name, req.Email, req.Password, "user")
+	if err != nil {
+		if strings.Contains(err.Error(), "duplicate key") || strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			c.JSON(http.StatusConflict, gin.H{"error": "Este e-mail já está cadastrado"})
+			return
+		}
+		logger.Error("Erro ao criar usuário", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro interno ao processar cadastro"})
+		return
+	}
+
+	c.JSON(http.StatusCreated, user)
+}
+
 // Login godoc
 // @Summary      Realizar login
 // @Description  Autentica o usuário e retorna um token JWT

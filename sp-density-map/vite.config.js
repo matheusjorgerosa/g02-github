@@ -13,6 +13,13 @@ export default defineConfig({
           if (req.method !== 'POST') return req.url;
         },
       },
+      '/signup': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        bypass(req) {
+          if (req.method !== 'POST') return req.url;
+        },
+      },
       '/admin': 'http://localhost:8080',
       '/api': 'http://localhost:8080',
       '/health': 'http://localhost:8080',

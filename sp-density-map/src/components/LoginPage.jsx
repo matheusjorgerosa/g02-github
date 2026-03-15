@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { apiLogin } from '../services/api';
 
-export default function LoginPage({ onLogin, t, language }) {
+export default function LoginPage({ onLogin, onSwitchToSignup, t, language }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -92,7 +92,7 @@ export default function LoginPage({ onLogin, t, language }) {
 
           <p className="login-signup">
             {t.loginNoAccount || 'Não possui uma conta?'}{' '}
-            <a href="#" onClick={(e) => e.preventDefault()}>
+            <a href="#" onClick={(e) => { e.preventDefault(); onSwitchToSignup?.(); }}>
               {t.loginSignup || 'Cadastre-se agora'}
             </a>
           </p>

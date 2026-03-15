@@ -8,6 +8,9 @@ import {
   T, DEFAULT_SETTINGS, COLOR_RANGES, CHART_COLORS,
   FILTER_CONFIG, INITIAL_FILTERS, INITIAL_VIEW_STATE, parseTarget,
 } from './constants';
+import { isAuthenticated, removeToken } from './services/api';
+import LoginPage from './components/LoginPage';
+import SignupPage from './components/SignupPage';
 import Sidebar from './components/Sidebar';
 import SettingsPanel from './components/SettingsPanel';
 import MapView from './components/MapView';
@@ -35,6 +38,9 @@ function App() {
     const saved = getCookie();
     return saved ? { ...DEFAULT_SETTINGS, ...saved } : DEFAULT_SETTINGS;
   });
+
+  const [loggedIn, setLoggedIn] = useState(isAuthenticated());
+  const [authPage, setAuthPage] = useState('login');
 
   const updateSetting = (key, value) => setSettings(prev => ({ ...prev, [key]: value }));
   const resetSettings = () => setSettings(DEFAULT_SETTINGS);
@@ -166,6 +172,34 @@ function App() {
     }),
   ];
 
+  const handleLogout = () => {
+    removeToken();
+    setLoggedIn(false);
+  };
+
+  if (!loggedIn) {
+    const t = T[settings.language] || T.pt;
+    return (
+      <div className="venus-app">
+        {authPage === 'signup' ? (
+          <SignupPage
+            onLogin={() => setLoggedIn(true)}
+            onSwitchToLogin={() => setAuthPage('login')}
+            t={t}
+            language={settings.language}
+          />
+        ) : (
+          <LoginPage
+            onLogin={() => setLoggedIn(true)}
+            onSwitchToSignup={() => setAuthPage('signup')}
+            t={t}
+            language={settings.language}
+          />
+        )}
+      </div>
+    );
+  }
+
   if (loading) return (
     <div className="venus-app" style={{ justifyContent: 'center', alignItems: 'center' }} role="status" aria-live="polite">
       <span>{t.loading}</span>
@@ -176,7 +210,7 @@ function App() {
     <div className="venus-app">
       <a href="#main-content" className="skip-link">{t.skipToContent}</a>
 
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} t={t} language={settings.language} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} t={t} language={settings.language} onLogout={handleLogout} />
 
       <main className="venus-main" id="main-content" tabIndex="-1">
         {activeTab === 'dashboard' && (
