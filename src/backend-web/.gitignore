@@ -1,5 +1,0 @@
-.env
-service-account.json
-logs/
-*.exe
-*.bin
