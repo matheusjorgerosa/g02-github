@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { HexagonLayer } from 'deck.gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './Dashboard.css';
@@ -158,19 +158,21 @@ function App() {
     setViewState(prev => ({ ...prev, pitch: is2D ? 0 : 45, bearing: is2D ? 0 : prev.bearing }));
   }, [is2D]);
 
-  const layers = [
+  const onHover = useCallback(info => setHoverInfo(info), []);
+
+  const layers = useMemo(() => [
     new HexagonLayer({
       id: 'heatmap', data: filteredData,
       pickable: true, extruded: !is2D,
-      radius: 200, elevationScale: is2D ? 0 : 10,
+      radius: 500, elevationScale: is2D ? 0 : 20,
       getPosition: d => d.coordinates,
       getElevationWeight: d => d.displayValue,
       aggregation: 'SUM',
       colorRange,
-      onHover: info => setHoverInfo(info),
+      onHover,
       updateTriggers: { getElevationWeight: [apiData, onlyRelevant], colorRange: [settings.colorblindMode] },
     }),
-  ];
+  ], [filteredData, is2D, colorRange, onHover, apiData, onlyRelevant, settings.colorblindMode]);
 
   const handleLogout = () => {
     removeToken();
