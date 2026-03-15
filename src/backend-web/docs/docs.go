@@ -232,6 +232,237 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/flow/distribution/demographics": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna a porcentagem e volume de público por Gênero e Classe Social",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Demografia"
+                ],
+                "summary": "Distribuição demográfica",
+                "parameters": [
+                    {
+                        "description": "Filtros de busca",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/backend-web_internal_flow_models.DataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/backend-web_internal_flow_models.DemographicsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/flow/metrics": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna o total de audiência e o fluxo de pessoas por hora (24h)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Métricas"
+                ],
+                "summary": "Obter métricas gerais",
+                "parameters": [
+                    {
+                        "description": "Filtros de busca",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/backend-web_internal_flow_models.DataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/backend-web_internal_flow_models.MetricsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Filtros inválidos",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno no servidor",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/flow/ranking/neighborhoods": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna o ranking das ruas utilizando geocodificação reversa para obter nomes reais",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ranking"
+                ],
+                "summary": "Ranking de ruas mais movimentadas",
+                "parameters": [
+                    {
+                        "description": "Filtros de busca e limite",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/backend-web_internal_flow_models.DataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/backend-web_internal_flow_models.RankingResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/flow/spatial": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna pontos de latitude/longitude com volume para o mapa de calor",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Fluxo"
+                ],
+                "summary": "Obter dados espaciais",
+                "parameters": [
+                    {
+                        "description": "Filtros de busca",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/backend-web_internal_flow_models.DataRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/backend-web_internal_flow_models.SpatialResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
                 "description": "Autentica o usuário e retorna um token JWT",
@@ -277,6 +508,143 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "backend-web_internal_flow_models.CategoryValue": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "percentage": {
+                    "type": "number"
+                },
+                "volume": {
+                    "type": "integer"
+                }
+            }
+        },
+        "backend-web_internal_flow_models.DataRequest": {
+            "type": "object",
+            "required": [
+                "filters"
+            ],
+            "properties": {
+                "filters": {
+                    "description": "Filters contém os critérios de busca (Idade, Gênero, Classe)\nO 'binding:\"required\"' avisa ao Gin que este campo não pode ser nulo",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/backend-web_internal_flow_models.FilterPayload"
+                        }
+                    ]
+                },
+                "limit": {
+                    "type": "integer"
+                }
+            }
+        },
+        "backend-web_internal_flow_models.DemographicsResponse": {
+            "type": "object",
+            "properties": {
+                "gender": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend-web_internal_flow_models.CategoryValue"
+                    }
+                },
+                "socialClass": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend-web_internal_flow_models.CategoryValue"
+                    }
+                }
+            }
+        },
+        "backend-web_internal_flow_models.FilterPayload": {
+            "type": "object",
+            "properties": {
+                "ageGroups": {
+                    "description": "Lista de faixas etárias (ex: [\"65\", \"23\", \"31\"])",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "18-24",
+                        "25-34"
+                    ]
+                },
+                "genders": {
+                    "description": "Lista de gêneros (ex: [\"M\", \"F\"])",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "Masculino"
+                    ]
+                },
+                "socialClasses": {
+                    "description": "Lista de classes sociais (ex: [\"A\", \"B1\", C1])",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "A",
+                        "B"
+                    ]
+                }
+            }
+        },
+        "backend-web_internal_flow_models.HourCount": {
+            "type": "object",
+            "properties": {
+                "hour": {
+                    "type": "integer"
+                },
+                "volume": {
+                    "type": "integer"
+                }
+            }
+        },
+        "backend-web_internal_flow_models.MetricsResponse": {
+            "type": "object",
+            "properties": {
+                "flow24h": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/backend-web_internal_flow_models.HourCount"
+                    }
+                },
+                "totalAudience": {
+                    "type": "integer"
+                }
+            }
+        },
+        "backend-web_internal_flow_models.RankingResponse": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "volume": {
+                    "type": "integer"
+                }
+            }
+        },
+        "backend-web_internal_flow_models.SpatialResponse": {
+            "type": "object",
+            "properties": {
+                "latitude": {
+                    "type": "number"
+                },
+                "longitude": {
+                    "type": "number"
+                },
+                "weighted_uniques": {
+                    "type": "integer"
+                }
+            }
+        },
         "internal_user.AdminUpdateUserRequest": {
             "type": "object",
             "properties": {
@@ -361,6 +729,9 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_active": {
+                    "type": "boolean"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -389,8 +760,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Backend Web API",
-	Description:      "API de gerenciamento de usuários com autenticação JWT.",
+	Title:            "VENUS API",
+	Description:      "API unificada: autenticação JWT + dados de fluxo de audiência",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",
