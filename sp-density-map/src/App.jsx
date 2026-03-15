@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { HexagonLayer } from 'deck.gl';
-import Papa from 'papaparse';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './Dashboard.css';
 
 import {
   T, DEFAULT_SETTINGS, COLOR_RANGES, CHART_COLORS,
-  FILTER_CONFIG, INITIAL_FILTERS, INITIAL_VIEW_STATE, parseTarget,
+  FILTER_CONFIG, INITIAL_FILTERS, INITIAL_VIEW_STATE,
 } from './constants';
-import { isAuthenticated, removeToken } from './services/api';
+import { isAuthenticated, removeToken, apiPost } from './services/api';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import Sidebar from './components/Sidebar';
@@ -64,7 +63,7 @@ function App() {
   const colorRange  = COLOR_RANGES[settings.colorblindMode]  || COLOR_RANGES.none;
 
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [data, setData] = useState([]);
+  const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hoverInfo, setHoverInfo] = useState(null);
   const [filters, setFilters] = useState(INITIAL_FILTERS);
@@ -73,83 +72,84 @@ function App() {
   const [onlyRelevant, setOnlyRelevant] = useState(false);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
 
+  const filterKey = JSON.stringify({ i: filters.idade, g: filters.genero, c: filters.classe_social });
+
   useEffect(() => {
-    Papa.parse('/data.csv', {
-      download: true, header: true, skipEmptyLines: true,
-      complete: (results) => {
-        const validData = results.data
-          .filter(d => d.longitude && d.latitude)
-          .map(d => ({
-            ...d,
-            coordinates: [Number(d.longitude), Number(d.latitude)],
-            uniques: Number(d.uniques) || 0,
-            hour: parseInt(d.impression_hour) || 0,
-            targetObj: parseTarget(d.target),
-          }));
-        setData(validData);
-        setLoading(false);
+    if (!loggedIn) return;
+    const payload = {
+      filters: {
+        ageGroups: filters.idade,
+        genders: filters.genero,
+        socialClasses: filters.classe_social,
       },
-    });
-  }, []);
+    };
+
+    Promise.all([
+      apiPost('/api/v1/flow/spatial', payload).then(r => r.json()),
+      apiPost('/api/v1/flow/metrics', payload).then(r => r.json()),
+      apiPost('/api/v1/flow/ranking/neighborhoods', payload).then(r => r.json()),
+      apiPost('/api/v1/flow/distribution/demographics', payload).then(r => r.json()),
+    ])
+      .then(([spatial, metrics, ranking, demographics]) => {
+        setApiData({ spatial, metrics, ranking, demographics });
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Erro ao carregar dados:', err);
+        setLoading(false);
+      });
+  }, [loggedIn, filterKey]);
 
   const { filteredData, stats } = useMemo(() => {
-    if (!data.length) return {
+    const empty = {
       filteredData: [],
       stats: { totalImpressions: 0, hourlyChartData: [], peakHour: '00:00', categoryStats: { genero: { F: 0, M: 0 }, idade: {}, classe: {} }, topBairros: [] },
     };
+    if (!apiData) return empty;
 
-    const activeHours   = new Set(filters.horario);
-    const activeGens    = new Set(filters.genero);
-    const activeClasses = new Set(filters.classe_social);
-    const activeAges    = new Set(filters.idade);
+    const { spatial, metrics, ranking, demographics } = apiData;
 
-    let totalImpressions = 0;
-    const hourlyFullMap = Array(24).fill(0);
-    const categoryStats = {
-      genero: { F: 0, M: 0 },
-      idade:  Object.fromEntries(FILTER_CONFIG.idade.map(k => [k, 0])),
-      classe: Object.fromEntries(FILTER_CONFIG.classe_social.map(k => [k, 0])),
+    // Spatial → pontos para o HexagonLayer
+    const points = (spatial?.data || []).map(d => ({
+      coordinates: [d.longitude, d.latitude],
+      displayValue: d.weighted_uniques,
+    }));
+    const maxVal = points.length ? Math.max(...points.map(p => p.displayValue)) : 0;
+    const threshold = onlyRelevant ? maxVal * 0.4 : 0;
+    const filteredData = points.filter(d => d.displayValue >= threshold);
+
+    // Metrics → gráfico horário + total
+    const hourlyFull = Array(24).fill(0);
+    (metrics?.flow24h || []).forEach(h => { hourlyFull[h.hour] = h.volume; });
+    const activeHours = new Set(filters.horario);
+    const totalImpressions = hourlyFull.reduce((sum, v, i) => activeHours.has(i) ? sum + v : sum, 0);
+    const hourlyChartData = hourlyFull.map((v, i) => ({ hour: `${i}h`, value: v }));
+    const peakIdx = hourlyFull.indexOf(Math.max(...hourlyFull));
+
+    // Ranking → topBairros
+    const topBairros = (ranking?.ranking || []).map(r => ({
+      name: r.name.length > 30 ? r.name.substring(0, 30) + '…' : r.name,
+      value: r.volume,
+    })).slice(0, 5);
+
+    // Demographics → gênero e classe social
+    const genero = { F: 0, M: 0 };
+    (demographics?.gender || []).forEach(g => { genero[g.category] = g.volume; });
+    const classe = {};
+    FILTER_CONFIG.classe_social.forEach(k => { classe[k] = 0; });
+    (demographics?.socialClass || []).forEach(c => { classe[c.category] = c.volume; });
+
+    return {
+      filteredData,
+      stats: {
+        totalImpressions,
+        hourlyChartData,
+        peakHour: `${peakIdx.toString().padStart(2, '0')}:00`,
+        categoryStats: { genero, idade: {}, classe },
+        topBairros,
+      },
     };
-    const bairroMap = {};
-
-    const pointsWithFilteredVal = data.map(d => {
-      if (!d.targetObj) return { ...d, val: 0 };
-      const ageMult = filters.idade.reduce((s, v) => s + (d.targetObj.idade?.[v] || 0), 0);
-      const genMult = filters.genero.reduce((s, v) => s + (d.targetObj.genero?.[v] || 0), 0);
-      const clsMult = filters.classe_social.reduce((s, v) => s + (d.targetObj.classe_social?.[v] || 0), 0);
-      const val = d.uniques * ageMult * genMult * clsMult;
-      return { ...d, val, ageMult, genMult, clsMult };
-    }).filter(d => d.val > 0);
-
-    const visiblePoints = pointsWithFilteredVal.filter(d => activeHours.has(d.hour));
-    const maxImpact = visiblePoints.length > 0 ? Math.max(...visiblePoints.map(p => p.val)) : 0;
-    const relevancyThreshold = onlyRelevant ? maxImpact * 0.4 : 0;
-    const mapItems = [];
-
-    pointsWithFilteredVal.forEach(d => {
-      hourlyFullMap[d.hour] += d.val;
-      const baseForClass = d.uniques * d.ageMult * d.genMult;
-      Object.entries(d.targetObj.classe_social || {}).forEach(([k, v]) => { if (activeClasses.has(k)) categoryStats.classe[k] += baseForClass * v; });
-      const baseForGen = d.uniques * d.ageMult * d.clsMult;
-      Object.entries(d.targetObj.genero || {}).forEach(([k, v]) => { if (activeGens.has(k)) categoryStats.genero[k] += baseForGen * v; });
-      const baseForAge = d.uniques * d.genMult * d.clsMult;
-      Object.entries(d.targetObj.idade || {}).forEach(([k, v]) => { if (activeAges.has(k)) categoryStats.idade[k] += baseForAge * v; });
-      if (activeHours.has(d.hour) && d.val >= relevancyThreshold) {
-        totalImpressions += d.val;
-        mapItems.push({ ...d, displayValue: d.val });
-        const bairro = d.endereco || 'Outros';
-        bairroMap[bairro] = (bairroMap[bairro] || 0) + d.val;
-      }
-    });
-
-    const hourlyChartData = hourlyFullMap.map((v, i) => ({ hour: `${i}h`, value: Math.floor(v) }));
-    const peakHour = hourlyFullMap.indexOf(Math.max(...hourlyFullMap));
-    const topBairros = Object.entries(bairroMap)
-      .map(([name, value]) => ({ name: name.substring(0, 20), value: Math.floor(value) }))
-      .sort((a, b) => b.value - a.value).slice(0, 5);
-
-    return { filteredData: mapItems, stats: { totalImpressions: Math.floor(totalImpressions), hourlyChartData, peakHour: `${peakHour.toString().padStart(2, '0')}:00`, categoryStats, topBairros } };
-  }, [data, filters, onlyRelevant]);
+  }, [apiData, filters.horario, onlyRelevant]);
 
   const toggleFilter = (cat, val) =>
     setFilters(p => { const cur = p[cat]; const next = cur.includes(val) ? cur.filter(v => v !== val) : [...cur, val]; return { ...p, [cat]: next }; });
@@ -168,7 +168,7 @@ function App() {
       aggregation: 'SUM',
       colorRange,
       onHover: info => setHoverInfo(info),
-      updateTriggers: { getElevationWeight: [filters, onlyRelevant], colorRange: [settings.colorblindMode] },
+      updateTriggers: { getElevationWeight: [apiData, onlyRelevant], colorRange: [settings.colorblindMode] },
     }),
   ];
 

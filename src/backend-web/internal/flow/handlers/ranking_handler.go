@@ -16,7 +16,8 @@ import (
 // @Success      200 {object} map[string][]models.RankingResponse
 // @Failure      400 {object} map[string]string
 // @Failure      500 {object} map[string]string
-// @Router       /flow/ranking/neighborhoods [post]
+// @Security     BearerAuth
+// @Router       /api/v1/flow/ranking/neighborhoods [post]
 func (h *FlowHandler) HandleNeighborhoodRanking(c *gin.Context) {
 	var req models.DataRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

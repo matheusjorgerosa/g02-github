@@ -16,7 +16,8 @@ import (
 // @Success      200 {object} models.DemographicsResponse
 // @Failure      400 {object} map[string]string
 // @Failure      500 {object} map[string]string
-// @Router /flow/distribution/demographics [post]
+// @Security     BearerAuth
+// @Router       /api/v1/flow/distribution/demographics [post]
 func (h *FlowHandler) HandleDemographics(c *gin.Context) {
 	var req models.DataRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

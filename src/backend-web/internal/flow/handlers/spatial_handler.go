@@ -15,7 +15,8 @@ import (
 // @Param        request body models.DataRequest true "Filtros de busca"
 // @Success      200 {object} map[string][]models.SpatialResponse
 // @Failure      400 {object} map[string]string
-// @Router       /flow/spatial [post]
+// @Security     BearerAuth
+// @Router       /api/v1/flow/spatial [post]
 func (h *FlowHandler) HandleSpatialData(c *gin.Context) {
 	var req models.DataRequest
 	if err := c.ShouldBindJSON(&req); err != nil {

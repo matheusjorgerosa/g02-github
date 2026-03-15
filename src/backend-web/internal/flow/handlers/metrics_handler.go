@@ -16,7 +16,8 @@ import (
 // @Success      200 {object} models.MetricsResponse
 // @Failure      400 {object} map[string]string "Filtros inválidos"
 // @Failure      500 {object} map[string]string "Erro interno no servidor"
-// @Router       /flow/metrics [post]
+// @Security     BearerAuth
+// @Router       /api/v1/flow/metrics [post]
 func (h *FlowHandler) HandleMetrics(c *gin.Context) {
 	var req models.DataRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
