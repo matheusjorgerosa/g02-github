@@ -27,7 +27,7 @@ html[data-font-size="xlarge"] { font-size: 20px; }
 
 /* ── Font family ───────────────────────────────────────────────────────────── */
 [data-font-family="inter"]    { --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-[data-font-family="dyslexic"] { --font-family: 'OpenDyslexic', 'Comic Sans MS', cursive; }
+[data-font-family="dyslexic"] { --font-family: 'OpenDyslexicRegular', 'Comic Sans MS', cursive; }
 [data-font-family="mono"]     { --font-family: 'Courier New', Courier, monospace; }
 [data-font-family="serif"]    { --font-family: 'Georgia', 'Times New Roman', serif; }
 

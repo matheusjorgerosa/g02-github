@@ -45,3 +45,6 @@ service-account.json
 logs/
 *.exe
 *.bin
+
+# Go compiled binary
+src/backend-web/api
