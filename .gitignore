@@ -34,3 +34,11 @@ terraform.tfvars
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
+
+google-creds.json
+.env
+
+
+.vscode/
+.idea/
+
