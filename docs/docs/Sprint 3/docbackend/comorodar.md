@@ -70,4 +70,10 @@ go install github.com/swaggo/swag/cmd/swag@latest
 # Gere os arquivos
 swag init -g cmd/api/main.go
 ```
----
+
+## Credenciais de Acesso
+
+:::danger Atenção
+Para rodar o projeto, você vai precisar dos arquivos `.env` e `service-account.json`.
+Estes arquivos foram disponibilizados via slack e devem ser colados na raiz do projeto. Após isso, rodem `docker-compose up --build`
+:::
