@@ -2,7 +2,7 @@
 
 ## 🔗 Link para Documentação
 
-> 📚 **Documentação Online:** https://caio-alcantara.github.io/documentacao-m09-g02/
+> 📚 **Documentação Online:** https://graduacao.pages.git.inteli.edu.br/2026-1a/t12/g02/
 
 ---
 
@@ -62,3 +62,54 @@ npm start
 
 A documentação estará disponível em `http://localhost:3000`
 
+## Como rodar a plataforma
+
+### Pré-requisitos
+- Docker e Docker Compose
+- Node.js 18+
+- Arquivo `service-account.json` do GCP em `src/backend-web/`
+
+#### 1. Configurar variáveis de ambiente
+
+```bash
+cp src/backend-web/.env.example src/backend-web/.env
+```
+Preencha no .env:
+```bash
+JWT_SECRET — segredo para tokens JWT
+GOOGLE_MAPS_API_KEY — chave da API do Google Maps
+- GCP_PROJECT — projeto GCP (padrão: venus-m09)
+```
+
+#### 2. Subir o backend
+
+```bash
+cd src/backend-web
+docker compose up --build
+```
+
+Aguarde o log a aplicação subir.
+
+A API fica em http://localhost:8080.
+
+#### 3. Subir o frontend
+
+```bash
+cd sp-density-map
+npm install
+npm run dev
+```
+
+Acesse http://localhost:5173.
+
+#### 4. Verificar os serviços
+
+```bash
+Health: http://localhost:8080/health
+
+Frontend: http://localhost:5173
+
+Backend: http://localhost:8080
+
+Swagger: http://localhost:8080/docs/index.html
+```

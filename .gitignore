@@ -12,6 +12,7 @@ build
 
 # Misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -25,3 +26,25 @@ yarn-error.log*
 src/mock_api_claro/data/fluxo_diario_20260106.csv
 venv
 __pycache__
+
+
+config.h
+
+terraform.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+
+service-account.json
+.env
+
+
+.vscode/
+.idea/
+
+logs/
+*.exe
+*.bin
+
+# Go compiled binary
+src/backend-web/api
