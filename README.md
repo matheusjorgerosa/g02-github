@@ -2,7 +2,7 @@
 
 ## 🔗 Link para Documentação
 
-> 📚 **Documentação Online:** https://caio-alcantara.github.io/documentacao-m09-g02/
+> 📚 **Documentação Online:** https://graduacao.pages.git.inteli.edu.br/2026-1a/t12/g02/
 
 ---
 
