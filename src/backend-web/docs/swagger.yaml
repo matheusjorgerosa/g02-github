@@ -140,6 +140,20 @@ definitions:
       token:
         type: string
     type: object
+  internal_user.SignupRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        minLength: 6
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
   internal_user.User:
     properties:
       created_at:
@@ -479,6 +493,40 @@ paths:
               type: string
             type: object
       summary: Realizar login
+      tags:
+      - Public
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Cria um novo usuário com role "user" fixo
+      parameters:
+      - description: Dados do novo usuário
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_user.SignupRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/internal_user.User'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Conflict
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Cadastro público de usuário
       tags:
       - Public
 securityDefinitions:

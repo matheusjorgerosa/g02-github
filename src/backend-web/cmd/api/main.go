@@ -14,6 +14,7 @@ import (
 	flowhandlers "backend-web/internal/flow/handlers"
 	flowrepo "backend-web/internal/flow/repository"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"go.uber.org/zap"
@@ -81,10 +82,19 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Recovery()) // Adicionado para sua API não morrer se der um panic no código
 
+	// CORS para desenvolvimento
+	r.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
+		AllowCredentials: true,
+	}))
+
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	//Rotas públicas
 	r.POST("/login", userHandler.Login)
+	r.POST("/signup", userHandler.Signup)
 	r.GET("/health", func(c *gin.Context) { c.JSON(200, gin.H{"status": "up"}) })
 
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import Icons from './Icons';
 
-function Sidebar({ activeTab, setActiveTab, t, language }) {
+function Sidebar({ activeTab, setActiveTab, t, language, onLogout }) {
   return (
     <aside className="venus-sidebar" role="navigation" aria-label={language === 'pt' ? 'Menu principal' : 'Main menu'}>
       <div className="venus-logo-container">
@@ -48,7 +48,7 @@ function Sidebar({ activeTab, setActiveTab, t, language }) {
         </button>
       </nav>
 
-      <button className="venus-logout" aria-label={t.navLogout}>
+      <button className="venus-logout" aria-label={t.navLogout} onClick={onLogout}>
         <Icons.Logout />
         <span className="nav-label">{t.logout}</span>
       </button>

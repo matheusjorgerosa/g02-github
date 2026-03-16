@@ -35,10 +35,16 @@ terraform.tfstate
 terraform.tfstate.backup
 .terraform/
 
-google-creds.json
+service-account.json
 .env
 
 
 .vscode/
 .idea/
 
+logs/
+*.exe
+*.bin
+
+# Go compiled binary
+src/backend-web/api
