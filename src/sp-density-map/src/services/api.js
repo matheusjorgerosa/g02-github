@@ -82,3 +82,19 @@ export async function apiPost(path, body) {
     body: JSON.stringify(body),
   });
 }
+
+export function getUserRole() {
+  const token = getToken();
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.role;
+  } catch (e) {
+    return null;
+  }
+}
+
+export function isAdmin() {
+  return getUserRole() === 'admin';
+}
+
