@@ -1,5 +1,6 @@
 import React from 'react';
 import Icons from './Icons';
+import { isAdmin } from '../services/api';
 
 function Sidebar({ activeTab, setActiveTab, t, language, onLogout }) {
   return (
@@ -46,6 +47,29 @@ function Sidebar({ activeTab, setActiveTab, t, language, onLogout }) {
           <span className="nav-icon"><Icons.Settings /></span>
           <span className="nav-label">{t.settings}</span>
         </button>
+
+        {isAdmin() && (
+          <>
+            <button
+              className={`venus-nav-item ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => setActiveTab('users')}
+              aria-label={t.navUsers || "Usuários"}
+              aria-current={activeTab === 'users' ? 'page' : undefined}
+            >
+              <span className="nav-icon"><Icons.Users /></span>
+              <span className="nav-label">{t.users || "Usuários"}</span>
+            </button>
+            <button
+              className={`venus-nav-item ${activeTab === 'logs' ? 'active' : ''}`}
+              onClick={() => setActiveTab('logs')}
+              aria-label={t.navLogs || "Logs"}
+              aria-current={activeTab === 'logs' ? 'page' : undefined}
+            >
+              <span className="nav-icon"><Icons.Logs /></span>
+              <span className="nav-label">{t.logs || "Logs"}</span>
+            </button>
+          </>
+        )}
       </nav>
 
       <button className="venus-logout" aria-label={t.navLogout} onClick={onLogout}>
