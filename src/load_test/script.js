@@ -7,18 +7,24 @@ export const options = {
       executor: 'ramping-arrival-rate',
       startRate: 50,
       timeUnit: '1s',
-      preAllocatedVUs: 100,
-      maxVUs: 500,
+      preAllocatedVUs: 10000,
+      maxVUs: 100000,
       stages: [
-        { duration: '2m', target: 1000 },
-        { duration: '2m', target: 10000 },
-        { duration: '2m', target: 50000 },
-        { duration: '2m', target: 100000 },
-        { duration: '2m', target: 200000 },
-        { duration: '1m', target: 0 },  
+        { duration: '30s', target: 1000 },
+        { duration: '30s', target: 5000 },
+        { duration: '1m', target: 10000 },
+        { duration: '1m', target: 30000 },
+        { duration: '1m', target: 50000 },
+        { duration: '1m', target: 70000 },
+        { duration: '1m', target: 100000 },
       ],
+      gracefulStop: '30s',
     },
   },
+  thresholds: {
+    http_req_failed: ['rate<0.01'],
+
+  }
 };
 
 function gerarPayload() {
@@ -83,7 +89,7 @@ export default function () {
   const res = http.post(url, gerarPayload(), params);
 
   check(res, {
-    'status 200': (r) => r.status === 200,
+    'status 202': (r) => r.status === 202,
     'respondeu rápido (<500ms)': (r) => r.timings.duration < 500,
   });
 
