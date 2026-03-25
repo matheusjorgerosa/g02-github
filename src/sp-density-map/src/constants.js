@@ -21,7 +21,7 @@ export const T = {
     expandMap: 'Expandir mapa para tela cheia', minimizeMap: 'Minimizar mapa',
     view2D: 'Alternar para visão 2D', view3D: 'Alternar para visão 3D',
     navDashboard: 'Ir para Dashboard', navCampaigns: 'Ir para Campanhas',
-    navSettings: 'Abrir Configurações', navLogout: 'Sair do sistema', navUsers: 'Gerenciar Usu�rios', navLogs: 'Visualizar Logs', users: 'Usu�rios', logs: 'Logs',
+    navSettings: 'Abrir Configurações', navLogout: 'Sair do sistema', navUsers: 'Gerenciar Usuários', navLogs: 'Visualizar Logs', users: 'Usuários', logs: 'Logs',
     campaignsTitle: 'Visualize as suas campanhas.',
     darkMode: 'Modo Escuro',
     loginTitle: 'Que bom te ver novamente!',
