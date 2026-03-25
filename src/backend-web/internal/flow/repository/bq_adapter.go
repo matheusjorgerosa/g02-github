@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -47,6 +48,10 @@ func expandAgeRanges(ranges []string) []string {
 }
 
 func (b *BigQueryAdapter) Query(ctx context.Context, sql string, f models.FilterPayload) (RowIterator, error) {
+	if b == nil || b.client == nil {
+		return nil, errors.New("BigQuery nao configurado no ambiente atual")
+	}
+
 	q := b.client.Query(sql)
 	q.Parameters = []bigquery.QueryParameter{
 		{Name: "ages", Value: expandAgeRanges(f.AgeGroups)},
