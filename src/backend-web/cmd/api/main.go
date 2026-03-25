@@ -73,6 +73,7 @@ func main() {
 
 	// Migrações e Instâncias
 	database.DB.AutoMigrate(&user.User{})
+	database.SeedAdmin()
 	userService := &user.UserService{}
 	userHandler := user.NewUserHandler(userService)
 
