@@ -38,16 +38,6 @@ function Sidebar({ activeTab, setActiveTab, t, language, onLogout }) {
           <span className="nav-label">{t.campaigns}</span>
         </button>
 
-        <button
-          className={`venus-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
-          aria-label={t.navSettings}
-          aria-current={activeTab === 'settings' ? 'page' : undefined}
-        >
-          <span className="nav-icon"><Icons.Settings /></span>
-          <span className="nav-label">{t.settings}</span>
-        </button>
-
         {isAdmin() && (
           <>
             <button
@@ -68,12 +58,23 @@ function Sidebar({ activeTab, setActiveTab, t, language, onLogout }) {
               <span className="nav-icon"><Icons.Logs /></span>
               <span className="nav-label">{t.logs || "Logs"}</span>
             </button>
+
           </>
         )}
+
+        <button
+          className={`venus-nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+          onClick={() => setActiveTab('settings')}
+          aria-label={t.navSettings}
+          aria-current={activeTab === 'settings' ? 'page' : undefined}
+        >
+          <span className="nav-icon"><Icons.Settings /></span>
+          <span className="nav-label">{t.settings}</span>
+        </button>
       </nav>
 
       <button className="venus-logout" aria-label={t.navLogout} onClick={onLogout}>
-        <Icons.Logout />
+        <span className="nav-icon"><Icons.Logout /></span>
         <span className="nav-label">{t.logout}</span>
       </button>
     </aside>
