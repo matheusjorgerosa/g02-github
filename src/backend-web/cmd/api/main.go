@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"backend-web/internal/logs"
 	"backend-web/internal/platform/database"
 	"backend-web/internal/platform/logger"
 	"backend-web/internal/platform/middleware"
@@ -77,6 +78,9 @@ func main() {
 	userService := &user.UserService{}
 	userHandler := user.NewUserHandler(userService)
 
+	logRepo := logs.NewLogRepository("logs/app.jsonl")
+	logHandler := logs.NewLogHandler(logRepo)
+
 	logger.Info("a aplicação está iniciando...", zap.String("env", "development"))
 
 	// Configuração do Gin
@@ -103,10 +107,11 @@ func main() {
 	protected := r.Group("/admin")
 	protected.Use(middleware.AuthMiddleware())
 	{
-		protected.GET("/users",middleware.AdminOnly(), userHandler.ListUsers)
+		protected.GET("/users", middleware.AdminOnly(), userHandler.ListUsers)
 		protected.POST("/users", middleware.AdminOnly(), userHandler.CreateUser)
-		protected.PUT("/users/:id",middleware.AdminOnly() ,userHandler.AdminUpdateUser)
+		protected.PUT("/users/:id", middleware.AdminOnly(), userHandler.AdminUpdateUser)
 		protected.DELETE("/users/:id", middleware.AdminOnly(), userHandler.DeleteUser)
+		protected.GET("/logs", middleware.AdminOnly(), logHandler.ListLogs)
 	}
 
 	// Rotas de dados protegidas (qualquer usuário autenticado)
