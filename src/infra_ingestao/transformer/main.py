@@ -43,6 +43,7 @@ INSTANCE_CONNECTION_NAME = os.environ.get("INSTANCE_CONNECTION_NAME", "")
 
 TABLE_IDENTIFIER = "default.ingestao"
 BQ_TABLE = f"{GCP_PROJECT}.trusted.ingestao"
+IDEMPOTENCY_TABLE = "ingestion_idempotency"
 
 ICEBERG_SCHEMA = Schema(
     NestedField(1, "latitude", DoubleType(), required=False),
@@ -117,6 +118,163 @@ _catalog = None
 _engine = None
 
 
+def ensure_idempotency_table():
+    """Cria tabela de idempotência no mesmo Cloud SQL do catálogo Iceberg."""
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(text(f"""
+            CREATE TABLE IF NOT EXISTS {IDEMPOTENCY_TABLE} (
+                idempotency_key TEXT PRIMARY KEY,
+                bucket_name TEXT NOT NULL,
+                object_name TEXT NOT NULL,
+                object_generation TEXT NOT NULL,
+                event_id TEXT,
+                status TEXT NOT NULL CHECK (status IN ('processing', 'completed', 'failed')),
+                attempt_count INTEGER NOT NULL DEFAULT 1,
+                created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                completed_at TIMESTAMPTZ,
+                failed_at TIMESTAMPTZ,
+                last_error TEXT
+            )
+        """))
+        conn.execute(text(f"""
+            CREATE INDEX IF NOT EXISTS idx_{IDEMPOTENCY_TABLE}_status
+            ON {IDEMPOTENCY_TABLE} (status)
+        """))
+
+
+def build_idempotency_key(bucket_name: str, object_name: str, object_generation: str) -> str:
+    """Monta chave canônica de idempotência para object.finalized."""
+    return f"{bucket_name}|{object_name}|{object_generation}"
+
+
+def claim_event_processing(
+    idempotency_key: str,
+    bucket_name: str,
+    object_name: str,
+    object_generation: str,
+    event_id: str | None = None,
+) -> tuple[bool, str]:
+    """Tenta adquirir processamento exclusivo para a chave.
+
+    Retorno:
+      - (True, "claimed_new") quando o evento pode ser processado
+      - (False, "duplicate_completed") quando já foi concluído
+      - (False, "duplicate_in_progress") quando já está em processamento
+      - (False, "already_failed") quando houve falha registrada anteriormente
+    """
+    engine = _get_engine()
+
+    with engine.begin() as conn:
+        insert_result = conn.execute(
+            text(f"""
+                INSERT INTO {IDEMPOTENCY_TABLE} (
+                    idempotency_key,
+                    bucket_name,
+                    object_name,
+                    object_generation,
+                    event_id,
+                    status,
+                    attempt_count,
+                    created_at,
+                    updated_at
+                )
+                VALUES (
+                    :idempotency_key,
+                    :bucket_name,
+                    :object_name,
+                    :object_generation,
+                    :event_id,
+                    'processing',
+                    1,
+                    NOW(),
+                    NOW()
+                )
+                ON CONFLICT (idempotency_key) DO NOTHING
+            """),
+            {
+                "idempotency_key": idempotency_key,
+                "bucket_name": bucket_name,
+                "object_name": object_name,
+                "object_generation": object_generation,
+                "event_id": event_id,
+            },
+        )
+
+        if insert_result.rowcount == 1:
+            return True, "claimed_new"
+
+        current = conn.execute(
+            text(f"""
+                SELECT status
+                FROM {IDEMPOTENCY_TABLE}
+                WHERE idempotency_key = :idempotency_key
+                FOR UPDATE
+            """),
+            {"idempotency_key": idempotency_key},
+        ).mappings().first()
+
+        if not current:
+            return False, "already_failed"
+
+        current_status = current["status"]
+
+        conn.execute(
+            text(f"""
+                UPDATE {IDEMPOTENCY_TABLE}
+                SET attempt_count = attempt_count + 1,
+                    updated_at = NOW()
+                WHERE idempotency_key = :idempotency_key
+            """),
+            {"idempotency_key": idempotency_key},
+        )
+
+        if current_status == "completed":
+            return False, "duplicate_completed"
+        if current_status == "processing":
+            return False, "duplicate_in_progress"
+
+        return False, "already_failed"
+
+
+def mark_event_completed(idempotency_key: str):
+    """Marca chave de idempotência como concluída."""
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(
+            text(f"""
+                UPDATE {IDEMPOTENCY_TABLE}
+                SET status = 'completed',
+                    completed_at = NOW(),
+                    updated_at = NOW(),
+                    last_error = NULL
+                WHERE idempotency_key = :idempotency_key
+            """),
+            {"idempotency_key": idempotency_key},
+        )
+
+
+def mark_event_failed(idempotency_key: str, error_message: str):
+    """Marca chave de idempotência como falha para auditoria/manual fix."""
+    engine = _get_engine()
+    with engine.begin() as conn:
+        conn.execute(
+            text(f"""
+                UPDATE {IDEMPOTENCY_TABLE}
+                SET status = 'failed',
+                    failed_at = NOW(),
+                    updated_at = NOW(),
+                    last_error = :error_message
+                WHERE idempotency_key = :idempotency_key
+            """),
+            {
+                "idempotency_key": idempotency_key,
+                "error_message": error_message,
+            },
+        )
+
+
 def _get_engine():
     """Retorna engine SQLAlchemy singleton com Cloud SQL Connector."""
     global _engine
@@ -128,6 +286,7 @@ def _get_engine():
         with _engine.connect() as conn:
             result = conn.execute(text("SELECT 1"))
             logger.info(f"Cloud SQL conectado: {result.scalar()}")
+        ensure_idempotency_table()
     return _engine
 
 
@@ -280,10 +439,8 @@ def transform_and_write(records: list[dict], source_file: str):
     logger.info(f"Escritos {len(records)} registros na tabela Iceberg ({source_file})")
 
     # 2. Load no BigQuery (dual-write)
-    try:
-        load_to_bigquery(arrow_table, now, source_file, len(records))
-    except Exception as e:
-        logger.error(f"Erro ao carregar no BigQuery (dados salvos no Iceberg): {e}", exc_info=True)
+    # Se falhar, propaga para a camada de idempotência marcar 'failed'.
+    load_to_bigquery(arrow_table, now, source_file, len(records))
 
 
 def load_to_bigquery(arrow_table: pa.Table, ingested_at: datetime, source_file: str, num_records: int):
@@ -327,18 +484,60 @@ def handle_event():
     if "bucket" in envelope and "name" in envelope:
         bucket_name = envelope["bucket"]
         object_name = envelope["name"]
+        object_generation = str(envelope.get("generation", ""))
+        event_id = envelope.get("id")
     elif "data" in envelope:
         data = envelope["data"]
         bucket_name = data.get("bucket", "")
         object_name = data.get("name", "")
+        object_generation = str(data.get("generation", ""))
+        event_id = envelope.get("id") or request.headers.get("ce-id")
     else:
         return jsonify({"error": "Cannot parse event"}), 400
+
+    if not object_generation:
+        logger.warning("Evento sem generation; usando fallback 'unknown'")
+        object_generation = "unknown"
 
     if not object_name.startswith("raw/") or not object_name.endswith(".json.gz"):
         logger.info(f"Ignorando objeto: {object_name}")
         return jsonify({"status": "ignored"}), 200
 
-    logger.info(f"Processando: gs://{bucket_name}/{object_name}")
+    idempotency_key = build_idempotency_key(
+        bucket_name=bucket_name,
+        object_name=object_name,
+        object_generation=object_generation,
+    )
+
+    can_process, claim_status = claim_event_processing(
+        idempotency_key=idempotency_key,
+        bucket_name=bucket_name,
+        object_name=object_name,
+        object_generation=object_generation,
+        event_id=event_id,
+    )
+
+    if not can_process:
+        logger.info(
+            "Evento duplicado/indisponível para processamento | key=%s status=%s",
+            idempotency_key,
+            claim_status,
+        )
+        return jsonify({
+            "status": "skipped",
+            "reason": claim_status,
+            "source": object_name,
+            "generation": object_generation,
+            "idempotency_key": idempotency_key,
+        }), 200
+
+    logger.info(
+        "Processando: gs://%s/%s | generation=%s | key=%s",
+        bucket_name,
+        object_name,
+        object_generation,
+        idempotency_key,
+    )
 
     try:
         records = download_and_decompress(bucket_name, object_name)
@@ -351,13 +550,17 @@ def handle_event():
 
         if len(unique_records) == 0:
             logger.info("Nenhum registro após dedup.")
+            mark_event_completed(idempotency_key)
             return jsonify({"status": "empty_after_dedup"}), 200
 
         transform_and_write(unique_records, object_name)
+        mark_event_completed(idempotency_key)
 
         return jsonify({
             "status": "processed",
             "source": object_name,
+            "generation": object_generation,
+            "idempotency_key": idempotency_key,
             "records_in": len(records),
             "records_out": len(unique_records),
             "duplicates_removed": removed,
@@ -365,11 +568,19 @@ def handle_event():
 
     except NotFound:
         logger.warning(f"Arquivo não encontrado (404), ignorando: {object_name}")
+        mark_event_failed(idempotency_key, "source_object_not_found")
         return jsonify({"status": "not_found", "object": object_name}), 200
 
     except Exception as e:
+        mark_event_failed(idempotency_key, str(e))
         logger.error(f"Erro ao processar {object_name}: {e}", exc_info=True)
-        return jsonify({"error": str(e)}), 500
+        return jsonify({
+            "status": "failed_manual_action_required",
+            "source": object_name,
+            "generation": object_generation,
+            "idempotency_key": idempotency_key,
+            "error": str(e),
+        }), 200
 
 
 @app.route("/health", methods=["GET"])
