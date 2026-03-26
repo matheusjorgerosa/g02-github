@@ -1,0 +1,122 @@
+swagger: "2.0"
+info:
+  title: venus-backend-api
+  version: "1.0"
+host: "localhost"
+schemes:
+  - https
+produces:
+  - application/json
+
+x-google-backend:
+  address: "${cloud_run_url}"
+  protocol: h2
+
+paths:
+  /health:
+    get:
+      operationId: health
+      responses:
+        "200":
+          description: OK
+
+  /login:
+    post:
+      operationId: login
+      responses:
+        "200":
+          description: OK
+
+  /signup:
+    post:
+      operationId: signup
+      responses:
+        "200":
+          description: OK
+
+  /admin/users:
+    get:
+      operationId: adminListUsers
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: OK
+    post:
+      operationId: adminCreateUser
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: OK
+
+  /admin/users/{id}:
+    put:
+      operationId: adminUpdateUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+    delete:
+      operationId: adminDeleteUser
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          type: string
+      responses:
+        "200":
+          description: OK
+
+  /api/v1/flow/spatial:
+    post:
+      operationId: flowSpatial
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: OK
+
+  /api/v1/flow/metrics:
+    post:
+      operationId: flowMetrics
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: OK
+
+  /api/v1/flow/ranking/neighborhoods:
+    post:
+      operationId: flowRanking
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: OK
+
+  /api/v1/flow/distribution/demographics:
+    post:
+      operationId: flowDemographics
+      security:
+        - BearerAuth: []
+      responses:
+        "200":
+          description: OK
+
+securityDefinitions:
+  BearerAuth:
+    authorizationUrl: ""
+    flow: implicit
+    type: oauth2
+    x-google-issuer: "${jwt_issuer}"
+    x-google-jwks_uri: "${jwks_uri}"
+    x-google-audiences: "${api_audience}"

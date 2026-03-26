@@ -1,0 +1,735 @@
+{
+  "version": 4,
+  "terraform_version": "1.14.7",
+  "serial": 66,
+  "lineage": "73c5326d-05c0-1fcd-e055-84e8ba9a39a4",
+  "outputs": {
+    "api_gateway_url": {
+      "value": null,
+      "type": "string"
+    },
+    "cloud_run_url": {
+      "value": "",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "google_api_gateway_api",
+      "name": "backend_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google-beta\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "api_id": "venus-backend-api",
+            "create_time": "2026-03-25T18:20:15.618310927Z",
+            "display_name": "venus-backend-api",
+            "effective_labels": {},
+            "id": "projects/venus-m09/locations/global/apis/venus-backend-api",
+            "labels": {},
+            "managed_service": "venus-backend-api-1n0occoi250hs.apigateway.venus-m09.cloud.goog",
+            "name": "projects/venus-m09/locations/global/apis/venus-backend-api",
+            "project": "venus-m09",
+            "terraform_labels": {},
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_artifact_registry_repository",
+      "name": "backend_repo",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "cleanup_policies": [],
+            "cleanup_policy_dry_run": false,
+            "create_time": "2026-03-25T18:20:20.897057Z",
+            "description": "Imagens Docker do Backend Web",
+            "docker_config": [],
+            "effective_labels": {},
+            "format": "DOCKER",
+            "id": "projects/venus-m09/locations/us-central1/repositories/backend-web-repo",
+            "kms_key_name": "",
+            "labels": {},
+            "location": "us-central1",
+            "maven_config": [],
+            "mode": "STANDARD_REPOSITORY",
+            "name": "backend-web-repo",
+            "project": "venus-m09",
+            "remote_repository_config": [],
+            "repository_id": "backend-web-repo",
+            "terraform_labels": {},
+            "timeouts": null,
+            "update_time": "2026-03-25T18:34:12.026554Z",
+            "virtual_repository_config": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project_service.apis"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_cloud_run_v2_service",
+      "name": "backend_api",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "annotations": {},
+            "binary_authorization": [],
+            "client": "",
+            "client_version": "",
+            "conditions": [
+              {
+                "execution_reason": "",
+                "last_transition_time": "2026-03-25T18:32:34.285032Z",
+                "message": "Image 'us-central1-docker.pkg.dev/venus-m09/backend-web-repo/api-backend:v1' not found.",
+                "reason": "REVISION_FAILED",
+                "revision_reason": "",
+                "severity": "",
+                "state": "CONDITION_FAILED",
+                "type": "RoutesReady"
+              },
+              {
+                "execution_reason": "",
+                "last_transition_time": "2026-03-25T18:32:34.236061Z",
+                "message": "Image 'us-central1-docker.pkg.dev/venus-m09/backend-web-repo/api-backend:v1' not found.",
+                "reason": "",
+                "revision_reason": "",
+                "severity": "",
+                "state": "CONDITION_FAILED",
+                "type": "ConfigurationsReady"
+              }
+            ],
+            "create_time": "2026-03-25T18:32:33.986241Z",
+            "creator": "joao.oliveira@sou.inteli.edu.br",
+            "custom_audiences": [],
+            "delete_time": "",
+            "description": "",
+            "effective_annotations": {},
+            "effective_labels": {},
+            "etag": "\"CMHUkM4GEOivo9YD/cHJvamVjdHMvdmVudXMtbTA5L2xvY2F0aW9ucy91cy1jZW50cmFsMS9zZXJ2aWNlcy9hcGktYmFja2VuZC13ZWI\"",
+            "expire_time": "",
+            "generation": "1",
+            "id": "projects/venus-m09/locations/us-central1/services/api-backend-web",
+            "ingress": "INGRESS_TRAFFIC_ALL",
+            "labels": {},
+            "last_modifier": "joao.oliveira@sou.inteli.edu.br",
+            "latest_created_revision": "projects/venus-m09/locations/us-central1/services/api-backend-web/revisions/api-backend-web-00001-tw7",
+            "latest_ready_revision": "",
+            "launch_stage": "GA",
+            "location": "us-central1",
+            "name": "api-backend-web",
+            "observed_generation": "1",
+            "project": "venus-m09",
+            "reconciling": false,
+            "template": [
+              {
+                "annotations": {},
+                "containers": [
+                  {
+                    "args": [],
+                    "command": [],
+                    "depends_on": [],
+                    "env": [
+                      {
+                        "name": "JWT_SECRET",
+                        "value": "teste",
+                        "value_source": []
+                      },
+                      {
+                        "name": "GCP_PROJECT",
+                        "value": "venus-m09",
+                        "value_source": []
+                      },
+                      {
+                        "name": "DB_HOST",
+                        "value": "/cloudsql/venus-m09:us-central1:venus-backend-db-v2",
+                        "value_source": []
+                      },
+                      {
+                        "name": "DB_USER",
+                        "value": "postgres",
+                        "value_source": []
+                      },
+                      {
+                        "name": "DB_PASSWORD",
+                        "value": "postgres",
+                        "value_source": []
+                      },
+                      {
+                        "name": "DB_NAME",
+                        "value": "venus",
+                        "value_source": []
+                      },
+                      {
+                        "name": "DB_PORT",
+                        "value": "5432",
+                        "value_source": []
+                      },
+                      {
+                        "name": "GOOGLE_MAPS_API_KEY",
+                        "value": "AIzaSyA3y7oRYe1Z3kcY18x7agVdxokYMrs6M-U",
+                        "value_source": []
+                      },
+                      {
+                        "name": "ADMIN_EMAIL",
+                        "value": "admin@venus.com",
+                        "value_source": []
+                      },
+                      {
+                        "name": "ADMIN_PASSWORD",
+                        "value": "admin123",
+                        "value_source": []
+                      }
+                    ],
+                    "image": "us-central1-docker.pkg.dev/venus-m09/backend-web-repo/api-backend:v1",
+                    "liveness_probe": [],
+                    "name": "",
+                    "ports": [
+                      {
+                        "container_port": 8080,
+                        "name": "http1"
+                      }
+                    ],
+                    "resources": [
+                      {
+                        "cpu_idle": true,
+                        "limits": {
+                          "cpu": "1000m",
+                          "memory": "512Mi"
+                        },
+                        "startup_cpu_boost": false
+                      }
+                    ],
+                    "startup_probe": [
+                      {
+                        "failure_threshold": 1,
+                        "grpc": [],
+                        "http_get": [],
+                        "initial_delay_seconds": 0,
+                        "period_seconds": 240,
+                        "tcp_socket": [
+                          {
+                            "port": 8080
+                          }
+                        ],
+                        "timeout_seconds": 240
+                      }
+                    ],
+                    "volume_mounts": [
+                      {
+                        "mount_path": "/cloudsql",
+                        "name": "cloudsql"
+                      }
+                    ],
+                    "working_dir": ""
+                  }
+                ],
+                "encryption_key": "",
+                "execution_environment": "",
+                "labels": {},
+                "max_instance_request_concurrency": 80,
+                "revision": "",
+                "scaling": [],
+                "service_account": "backend-web-sa@venus-m09.iam.gserviceaccount.com",
+                "session_affinity": false,
+                "timeout": "300s",
+                "volumes": [
+                  {
+                    "cloud_sql_instance": [
+                      {
+                        "instances": [
+                          "venus-m09:us-central1:venus-backend-db-v2"
+                        ]
+                      }
+                    ],
+                    "gcs": [],
+                    "name": "cloudsql",
+                    "nfs": [],
+                    "secret": []
+                  }
+                ],
+                "vpc_access": []
+              }
+            ],
+            "terminal_condition": [
+              {
+                "execution_reason": "",
+                "last_transition_time": "2026-03-25T18:32:34.285032Z",
+                "message": "Image 'us-central1-docker.pkg.dev/venus-m09/backend-web-repo/api-backend:v1' not found.",
+                "reason": "REVISION_FAILED",
+                "revision_reason": "",
+                "severity": "",
+                "state": "CONDITION_FAILED",
+                "type": "Ready"
+              }
+            ],
+            "terraform_labels": {},
+            "timeouts": null,
+            "traffic": [
+              {
+                "percent": 100,
+                "revision": "",
+                "tag": "",
+                "type": "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
+              }
+            ],
+            "traffic_statuses": [],
+            "uid": "8b73451b-8cff-4e90-8b8b-e07a6d8a0dfd",
+            "update_time": "2026-03-25T18:32:33.986241Z",
+            "uri": ""
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMCJ9",
+          "dependencies": [
+            "google_project_iam_member.backend_cloudsql_client",
+            "google_project_service.apis",
+            "google_service_account.backend_sa",
+            "google_sql_database_instance.venus_db"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_cloud_run_v2_service_iam_member",
+      "name": "noauth",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZN3YxyPWA=",
+            "id": "projects/venus-m09/locations/us-central1/services/api-backend-web/roles/run.invoker/allUsers",
+            "location": "us-central1",
+            "member": "allUsers",
+            "name": "projects/venus-m09/locations/us-central1/services/api-backend-web",
+            "project": "venus-m09",
+            "role": "roles/run.invoker"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_cloud_run_v2_service.backend_api",
+            "google_project_iam_member.backend_cloudsql_client",
+            "google_project_service.apis",
+            "google_service_account.backend_sa",
+            "google_sql_database_instance.venus_db"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_iam_member",
+      "name": "backend_cloudsql_client",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZN3VMLKlY=",
+            "id": "venus-m09/roles/cloudsql.client/serviceAccount:backend-web-sa@venus-m09.iam.gserviceaccount.com",
+            "member": "serviceAccount:backend-web-sa@venus-m09.iam.gserviceaccount.com",
+            "project": "venus-m09",
+            "role": "roles/cloudsql.client"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "google_project_service.apis",
+            "google_service_account.backend_sa"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_project_service",
+      "name": "apis",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "index_key": "apigateway.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "venus-m09/apigateway.googleapis.com",
+            "project": "venus-m09",
+            "service": "apigateway.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "artifactregistry.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "venus-m09/artifactregistry.googleapis.com",
+            "project": "venus-m09",
+            "service": "artifactregistry.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "cloudresourcemanager.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "venus-m09/cloudresourcemanager.googleapis.com",
+            "project": "venus-m09",
+            "service": "cloudresourcemanager.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "run.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "venus-m09/run.googleapis.com",
+            "project": "venus-m09",
+            "service": "run.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "servicecontrol.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "venus-m09/servicecontrol.googleapis.com",
+            "project": "venus-m09",
+            "service": "servicecontrol.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "servicemanagement.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "venus-m09/servicemanagement.googleapis.com",
+            "project": "venus-m09",
+            "service": "servicemanagement.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "create_before_destroy": true
+        },
+        {
+          "index_key": "sqladmin.googleapis.com",
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "venus-m09/sqladmin.googleapis.com",
+            "project": "venus-m09",
+            "service": "sqladmin.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_service_account",
+      "name": "backend_sa",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "account_id": "backend-web-sa",
+            "create_ignore_already_exists": null,
+            "description": "",
+            "disabled": false,
+            "display_name": "Service Account do backend-web",
+            "email": "backend-web-sa@venus-m09.iam.gserviceaccount.com",
+            "id": "projects/venus-m09/serviceAccounts/backend-web-sa@venus-m09.iam.gserviceaccount.com",
+            "member": "serviceAccount:backend-web-sa@venus-m09.iam.gserviceaccount.com",
+            "name": "projects/venus-m09/serviceAccounts/backend-web-sa@venus-m09.iam.gserviceaccount.com",
+            "project": "venus-m09",
+            "timeouts": null,
+            "unique_id": "100801640323202141527"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ==",
+          "dependencies": [
+            "google_project_service.apis"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_database",
+      "name": "venus",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "charset": "UTF8",
+            "collation": "en_US.UTF8",
+            "deletion_policy": "DELETE",
+            "id": "projects/venus-m09/instances/venus-backend-db-v2/databases/venus",
+            "instance": "venus-backend-db-v2",
+            "name": "venus",
+            "project": "venus-m09",
+            "self_link": "https://sqladmin.googleapis.com/sql/v1beta4/projects/venus-m09/instances/venus-backend-db-v2/databases/venus",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project_service.apis",
+            "google_sql_database_instance.venus_db"
+          ]
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_database_instance",
+      "name": "venus_db",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "available_maintenance_versions": [],
+            "clone": [],
+            "connection_name": "venus-m09:us-central1:venus-backend-db-v2",
+            "database_version": "POSTGRES_15",
+            "deletion_protection": false,
+            "dns_name": "",
+            "encryption_key_name": null,
+            "first_ip_address": "34.66.161.209",
+            "id": "venus-backend-db-v2",
+            "instance_type": "CLOUD_SQL_INSTANCE",
+            "ip_address": [
+              {
+                "ip_address": "34.66.161.209",
+                "time_to_retire": "",
+                "type": "PRIMARY"
+              },
+              {
+                "ip_address": "136.119.224.246",
+                "time_to_retire": "",
+                "type": "OUTGOING"
+              }
+            ],
+            "maintenance_version": "POSTGRES_15_17.R20260108.01_20",
+            "master_instance_name": "",
+            "name": "venus-backend-db-v2",
+            "private_ip_address": "",
+            "project": "venus-m09",
+            "psc_service_attachment_link": "",
+            "public_ip_address": "34.66.161.209",
+            "region": "us-central1",
+            "replica_configuration": [],
+            "restore_backup_context": [],
+            "root_password": null,
+            "self_link": "https://sqladmin.googleapis.com/sql/v1beta4/projects/venus-m09/instances/venus-backend-db-v2",
+            "server_ca_cert": [
+              {
+                "cert": "-----BEGIN CERTIFICATE-----\nMIIDcTCCAlmgAwIBAgIBADANBgkqhkiG9w0BAQsFADBwMS0wKwYDVQQuEyQzYWI4\nYzExYi02YzJmLTRkZmYtYThiNi0wODk4OTdjZDIwZTAxHDAaBgNVBAMTE0Nsb3Vk\nIFNRTCBTZXJ2ZXIgQ0ExFDASBgNVBAoTC0dvb2dsZSwgSW5jMQswCQYDVQQGEwJV\nUzAeFw0yNjAzMjUxODIwMDZaFw0zNjAzMjIxODIxMDZaMHAxLTArBgNVBC4TJDNh\nYjhjMTFiLTZjMmYtNGRmZi1hOGI2LTA4OTg5N2NkMjBlMDEcMBoGA1UEAxMTQ2xv\ndWQgU1FMIFNlcnZlciBDQTEUMBIGA1UEChMLR29vZ2xlLCBJbmMxCzAJBgNVBAYT\nAlVTMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqP+ISpGJEzXZRk87\ntoA3geDN6eS7hs8IQ5bSzHocApvpkG8LjsZL2aPDRTZqjM2Y1NCoIy7Zg22/R2tM\n+sIJMxrTswWvcrdPAcxbKpGsbcVyx2P4cl6YVjssqYjn6xCG3rJjBDxaolDcJWl7\nLXVYRQf9wArJ9E8inHpFNaCWzEF79VGIiBZYrEHTC2l7ftR7SjvcdDx+3H9wFqQI\nacydrJsLagnLSejHy+28TXyLyc1RKlC4JOUGizU79QKg51s0J78R5wJWwff7sYkc\nOyFHzLVCYG9K+AP1lKNC2/Ww2qhtdJjWBB5YbMjH7qx3lx4ePz7hdCcmVv5BtXf3\nG0LYewIDAQABoxYwFDASBgNVHRMBAf8ECDAGAQH/AgEAMA0GCSqGSIb3DQEBCwUA\nA4IBAQBZsspAsVv4giQkeIxycgrVvfqlyyEEthKiz5jCsjSxYKCZ5ItaKcI4fds7\nNsBCYazTM6jUyT8vHa5gYjSXIyq/ZlJOxOPF06XkNh0dZSNrAI5gDD5SLgsDsYqZ\nRh11kKt9SrNBEX3w25xoou74iZ6YIHjBK4b7TAp96PqBBlTWnsjqawXMJiZ/u8uA\nkTCwDOiU79Sq1fIepEtb3WXGcn7FLXFkYcok2mC/4pmtkfSO6gSisGyw9JZ9BFjS\n6A0qOxzusru0mQuVxfHPWiG3Fnckw3ikhTwStMool3Yi3v2Sdp2RtJXenND/mJRa\nCrn/lv34m0WCDc4vXee/NcrFtA+9\n-----END CERTIFICATE-----",
+                "common_name": "C=US,O=Google\\, Inc,CN=Cloud SQL Server CA,dnQualifier=3ab8c11b-6c2f-4dff-a8b6-089897cd20e0",
+                "create_time": "2026-03-25T18:20:06.037Z",
+                "expiration_time": "2036-03-22T18:21:06.037Z",
+                "sha1_fingerprint": "1baf0d7397b2c19ac4679a6c02ab05b75e519fe5"
+              }
+            ],
+            "service_account_email_address": "p470119945271-ny1u5q@gcp-sa-cloud-sql.iam.gserviceaccount.com",
+            "settings": [
+              {
+                "activation_policy": "ALWAYS",
+                "active_directory_config": [],
+                "advanced_machine_features": [],
+                "availability_type": "ZONAL",
+                "backup_configuration": [
+                  {
+                    "backup_retention_settings": [
+                      {
+                        "retained_backups": 7,
+                        "retention_unit": "COUNT"
+                      }
+                    ],
+                    "binary_log_enabled": false,
+                    "enabled": false,
+                    "location": "",
+                    "point_in_time_recovery_enabled": false,
+                    "start_time": "18:00",
+                    "transaction_log_retention_days": 7
+                  }
+                ],
+                "collation": "",
+                "connector_enforcement": "NOT_REQUIRED",
+                "data_cache_config": [],
+                "database_flags": [],
+                "deletion_protection_enabled": false,
+                "deny_maintenance_period": [],
+                "disk_autoresize": true,
+                "disk_autoresize_limit": 0,
+                "disk_size": 10,
+                "disk_type": "PD_SSD",
+                "edition": "ENTERPRISE",
+                "enable_dataplex_integration": false,
+                "enable_google_ml_integration": false,
+                "insights_config": [],
+                "ip_configuration": [
+                  {
+                    "allocated_ip_range": "",
+                    "authorized_networks": [],
+                    "enable_private_path_for_google_cloud_services": false,
+                    "ipv4_enabled": true,
+                    "private_network": "",
+                    "psc_config": [],
+                    "require_ssl": false,
+                    "server_ca_mode": "GOOGLE_MANAGED_INTERNAL_CA",
+                    "ssl_mode": ""
+                  }
+                ],
+                "location_preference": [
+                  {
+                    "follow_gae_application": "",
+                    "secondary_zone": "",
+                    "zone": "us-central1-c"
+                  }
+                ],
+                "maintenance_window": [],
+                "password_validation_policy": [],
+                "pricing_plan": "PER_USE",
+                "sql_server_audit_config": [],
+                "tier": "db-f1-micro",
+                "time_zone": "",
+                "user_labels": {},
+                "version": 1
+              }
+            ],
+            "timeouts": null
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "root_password"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "server_ca_cert"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo1NDAwMDAwMDAwMDAwLCJkZWxldGUiOjU0MDAwMDAwMDAwMDAsInVwZGF0ZSI6NTQwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "google_project_service.apis"
+          ],
+          "create_before_destroy": true
+        }
+      ]
+    },
+    {
+      "mode": "managed",
+      "type": "google_sql_user",
+      "name": "postgres",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "deletion_policy": null,
+            "host": "",
+            "id": "postgres//venus-backend-db-v2",
+            "instance": "venus-backend-db-v2",
+            "name": "postgres",
+            "password": "postgres",
+            "password_policy": [],
+            "project": "venus-m09",
+            "sql_server_user_details": [],
+            "timeouts": null,
+            "type": ""
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "google_project_service.apis",
+            "google_sql_database_instance.venus_db"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
