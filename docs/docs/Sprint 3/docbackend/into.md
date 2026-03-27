@@ -3,13 +3,14 @@ sidebar_position: 1
 title: Introdução
 ---
 
-# Documentação do Backend
+## 1. Documentação do Backend
 O backend para este projeto da Eletromídia foca em duas funcionalidades principais:
 
 - Autenticação e gerenciamento de usuários com controle de roles (user / admin)
 - Dashboard de dados com métricas, distribuição demográfica, dados espaciais e ranking de ruas. todos alimentados pelo Google BigQuery
 
-### Stacks tecnológicas
+---
+## 2. Stacks tecnológicas
 | Stacks               | Tecnologia                    |
 |----------------------|-------------------------------|
 | Linguagem            | Go                            |
@@ -24,7 +25,8 @@ O backend para este projeto da Eletromídia foca em duas funcionalidades princip
 | Logger               | Uber Zap                      |
 | Infraestrutura       | Docker + Docker Compose       |
 
-## Estrutura de pastas
+---
+## 3. Estrutura de pastas
 O projeto segue uma arquitetura modular dividida em dois domínios principais: user (autenticação e gerenciamento) e flow (dados de audiência).
 
 ```
@@ -92,7 +94,8 @@ O projeto segue uma arquitetura modular dividida em dois domínios principais: u
 - **Service**: contém a lógica de negócio (ex: gerar JWT, hash de senha)
 - **Repository**: acessa os dados - PostgreSQL via GORM ou BigQuery via cliente Go
 
-## Resumo das Rotas
+---
+## 4. Resumo das Rotas
 
 | Método | Rota                                   | Auth | Role       | Descrição                                   |
 |-------|----------------------------------------|------|-----------|----------------------------------------------|
