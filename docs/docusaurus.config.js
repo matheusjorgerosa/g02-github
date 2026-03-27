@@ -10,7 +10,7 @@ import { themes as prismThemes } from "prism-react-renderer"
 const config = {
   title: "Documentação do Projeto",
   tagline: "T12 - Engenharia da Computação - Inteli / TODO: COLOCAR ALGO MELHOR AQUI",
-  favicon: "img/favicon.ico",
+  favicon: "img/logo_grupo.png",
 
   // Set the production url of your site here
   url: "https://git.inteli.edu.br",
@@ -47,6 +47,7 @@ const config = {
       ({
         docs: {
           sidebarPath: "./sidebars.js",
+            routeBasePath: "/",
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: "https://git.inteli.edu.br/graduacao/2026-1a/t12/g02",
@@ -83,7 +84,7 @@ const config = {
       // Replace with your project's social card
       image: "img/docusaurus-social-card.jpg",
       navbar: {
-        title: "Grupo do Café da Sophia",
+        title: "Café da Sophia",
         logo: {
           // alt: "g02 Logo",
           src: "img/logo_grupo.png",

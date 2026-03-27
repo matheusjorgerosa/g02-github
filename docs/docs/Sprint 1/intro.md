@@ -1,6 +1,7 @@
 ---
 title: Documentação
 sidebar_position: 1
+slug: /
 ---
 
 # Documentação
