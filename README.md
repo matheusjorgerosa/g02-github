@@ -114,7 +114,7 @@ Backend: http://localhost:8080
 Swagger: http://localhost:8080/docs/index.html
 ```
 
-## Como rodar a testes de integração
+## Como rodar os testes de integração
 
 ### 1. Pré-requisitos
 
