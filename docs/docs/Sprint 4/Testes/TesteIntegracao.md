@@ -1,6 +1,6 @@
 ---
 Title: Testes de Integração
-sidebar-position: 1
+sidebar-position: 2
 ---
 
 # Testes de Integração End-to-End (E2E)
