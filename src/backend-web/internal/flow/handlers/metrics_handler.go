@@ -24,7 +24,7 @@ func (h *FlowHandler) HandleMetrics(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Filtros inválidos"})
 		return
 	}
-	metrics, err := h.repo.GetGeneralMetrics(c.Request.Context(), req.Filters)
+	metrics, err := h.repo.GetGeneralMetrics(c.Request.Context(), *req.Filters)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
