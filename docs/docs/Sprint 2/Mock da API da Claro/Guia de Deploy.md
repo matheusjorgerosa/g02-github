@@ -11,7 +11,9 @@ Este guia descreve o passo a passo para publicar o mock no Google Cloud Run via 
 - Acesso ao projeto GCP com permissões de Artifact Registry e Cloud Run
 - `gcloud` CLI instalado (veja o passo 1 caso ainda não tenha)
 
-## Passo 1 — Instalar e configurar o `gcloud`
+---
+
+## Passo 1 - Instalar e configurar o `gcloud`
 
 Caso ainda não tenha o SDK instalado:
 
@@ -26,12 +28,14 @@ Em seguida, selecione o projeto correto:
 ```bash
 gcloud config set project SEU_PROJECT_ID
 ```
+---
 
-## Passo 2 — Ativar o Artifact Registry
+## 2. Passo 2 — Ativar o Artifact Registry
 
 ```bash
 gcloud services enable artifactregistry.googleapis.com
 ```
+---
 
 ## Passo 3 — Criar o repositório Docker
 
@@ -44,12 +48,13 @@ gcloud artifacts repositories create mock-api-claro \
 
 O repositório ficará visível no console do GCP em **Artifact Registry → Repositories**.
 
+---
 ## Passo 4 — Autenticar o Docker no GCP
 
 ```bash
 gcloud auth configure-docker us-central1-docker.pkg.dev
 ```
-
+---
 ## Passo 5 — Build da imagem
 
 No diretório onde está o `Dockerfile`:
@@ -60,13 +65,15 @@ docker build -t imagem-api .
 
 > Não utilize `sudo` no comando de build.
 
+---
+
 ## Passo 6 — Taggear a imagem
 
 ```bash
 docker tag imagem-api \
   us-central1-docker.pkg.dev/SEU_PROJECT_ID/mock-api-claro/api-imagem:v1
 ```
-
+---
 ## Passo 7 — Push para o Artifact Registry
 
 ```bash
@@ -74,6 +81,7 @@ docker push \
   us-central1-docker.pkg.dev/SEU_PROJECT_ID/mock-api-claro/api-imagem:v1
 ```
 
+---
 ## Passo 8 — Deploy no Cloud Run
 
 ```bash
@@ -86,6 +94,7 @@ gcloud run deploy mock-api-claro \
 
 Ao final do deploy, o `gcloud` retornará a URL pública do serviço.
 
+---
 ## Resumo dos comandos
 
 | Passo | Comando resumido                          |
