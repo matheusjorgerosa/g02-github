@@ -24,7 +24,7 @@ func (h *FlowHandler) HandleDemographics(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Filtros inválidos"})
 		return
 	}
-	dist, err := h.repo.GetDemographics(c.Request.Context(), req.Filters)
+	dist, err := h.repo.GetDemographics(c.Request.Context(), *req.Filters)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

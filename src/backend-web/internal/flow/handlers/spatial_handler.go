@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"net/http"
-	"github.com/gin-gonic/gin"
 	"backend-web/internal/flow/models"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // HandleSpatialData godoc
@@ -23,10 +24,11 @@ func (h *FlowHandler) HandleSpatialData(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Filtros inválidos"})
 		return
 	}
-	data, err := h.repo.GetSpatialData(c.Request.Context(), req.Filters)
+	data, err := h.repo.GetSpatialData(c.Request.Context(), *req.Filters)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": data})
 }
+
