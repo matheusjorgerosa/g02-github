@@ -3,7 +3,7 @@ Title: Simulação de Sensores – Envio de Dados para o Gateway
 sidebar_position: 2
 ---
 
-## Estrutura do Projeto
+## 1. Estrutura do Projeto
 
 ```
 simulacao-sensores/
@@ -14,7 +14,7 @@ simulacao-sensores/
 
 Este firmware foi desenvolvido para simular o envio de dados de celulares para o gateway, permitindo testar ingestão, processamento e armazenamento de dados no backend.
 
-### `config.h`
+### 1.1 `config.h`
 
 Define as configurações sensíveis:
 
@@ -24,7 +24,7 @@ Define as configurações sensíveis:
 #define WIFI_PASSWORD "senha"
 ```
 
-### Parâmetros
+### 1.2 Parâmetros
 
 | Variável        | Descrição                            |
 | --------------- | ------------------------------------ |
@@ -32,9 +32,12 @@ Define as configurações sensíveis:
 | `WIFI_SSID`     | Nome da rede Wi-Fi                   |
 | `WIFI_PASSWORD` | Senha da rede                        |
 
-## Funcionamento do `firmware.ino`
 
-### Inicialização (`setup()`)
+---
+
+## 2. Funcionamento do `firmware.ino`
+
+### 2.1 Inicialização (`setup()`)
 
 * Inicializa comunicação serial (115200 baud)
 * Conecta ao Wi-Fi
@@ -47,7 +50,7 @@ Conectando ao WiFi...
 Conectado! IP: 192.168.x.x
 ```
 
-### Loop Principal (`loop()`)
+### 2.2 Loop Principal (`loop()`)
 
 Executa continuamente:
 
@@ -114,7 +117,7 @@ Para cada requisição, o monitor serial exibe:
 [13] Erro: connection refused
 ```
 
-### Frequência de envio
+### 2.3 Frequência de envio
 
 As requisições são enviadas a cada:
 

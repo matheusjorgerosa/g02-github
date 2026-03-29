@@ -4,72 +4,107 @@ title: Proposta de Visualização
 
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
-&emsp;	Este documento descreve o wireframe proposto para o dashboard web de visualização dos dados. A solução foi projetada para usuários não técnicos da área de negócios, priorizando clareza visual, exploração intuitiva e geração de insights.
+&emsp;Este documento apresenta o wireframe do dashboard web para visualização de dados. A solução foi projetada para usuários não técnicos da área de negócios, priorizando clareza visual, navegação intuitiva e suporte à geração de insights.
 
-&emsp;	A interface está organizada em três telas principais:
+&emsp;A interface está estruturada em três telas principais:
 
-1. Exploração espacial dos dados
-2. Visão consolidada e indicadores
-3. Análises temporais e demográficas
+1. Exploração geográfica dos dados  
+2. Visão consolidada com indicadores  
+3. Análises temporais e demográficas  
 
-## Tela 1 — Exploração Geográfica
+---
+
+## Tela 1 - Exploração Geográfica
 
 <div style={{ textAlign: 'center' }}>
-  <p><strong>Figura 1 - Proposta de Visulização de Exploração Geográgica</strong></p>
+  <p><strong>Figura 1 - Proposta de Visualização Geográfica</strong></p>
   <img 
     src={useBaseUrl('/img/wireframe1.jpeg')} 
-    alt="Exploração Geográgica" 
-    title="Exploração Geográgica" 
+    alt="Exploração Geográfica" 
+    title="Exploração Geográfica" 
     style={{ maxWidth: '80%', height: 'auto' }}
   />
   <p>Fonte: Elaborado pelo grupo Café da Sophia (2026)</p>
 </div>
 
-&emsp;	O objetivo é permitir que o usuário visualize os pontos de coleta de dados no mapa e consulte informações associadas a cada local. Desse modo, os componentes dessa tela são:
+&emsp;Esta tela tem como objetivo permitir a exploração espacial dos pontos de coleta de dados, possibilitando a identificação de padrões geográficos e consulta de informações associadas a cada local.
 
-* Seleção de Localização: Campo superior para definir área/região de interesse com *dropdown* de regiões e navegação direta no mapa.
+### Componentes
 
-* Mapa com Pontos: Visualização central da tela, onde cada ponto representa um `location_id`. Como interação, hover ou clique mostra a quantidade de pessoas e dados demográficos agregados.
+- **Seleção de localização**  
+  Campo superior que permite definir a área de interesse por meio de um *dropdown* de regiões ou interação direta com o mapa.
 
+- **Mapa com pontos (scatter map)**  
+  Visualização central onde cada ponto representa um `location_id`.  
+  Interações disponíveis:
+  - **Hover**: exibe informações resumidas (ex: volume de pessoas)
+  - **Clique**: detalha dados demográficos agregados do ponto selecionado
 
-## Tela 2 — Mapa de Calor
+---
+
+## Tela 2 - Visão Consolidada e Mapa de Calor
 
 <div style={{ textAlign: 'center' }}>
-  <p><strong>Figura 2 - Proposta de Visulização de Mapa de Calor</strong></p>
+  <p><strong>Figura 2 - Proposta de Visualização com Heatmap</strong></p>
   <img 
     src={useBaseUrl('/img/wireframe2.jpeg')} 
-    alt="Proposta de Visulização de Mapa de Calor" 
-    title="Proposta de Visulização de Mapa de Calor" 
+    alt="Mapa de Calor" 
+    title="Mapa de Calor" 
     style={{ maxWidth: '80%', height: 'auto' }}
   />
   <p>Fonte: Elaborado pelo grupo Café da Sophia (2026)</p>
 </div>
 
-&emsp;	O objetivo é oferecer uma visão resumida com métricas-chave e distribuição espacial agregada. Os componentes são:
+&emsp;Esta tela fornece uma visão agregada dos dados, permitindo análise rápida por meio de indicadores-chave e distribuição espacial da intensidade de fluxo.
 
-* Filtros: Período, horário, segmentação demográfica e região.
+### Componentes
 
-* Indicadores (KPI Cards): total de pessoas, pico de fluxo e local mais movimentado
+- **Filtros globais**  
+  Permitem refinar a visualização com base em:
+  - Período
+  - Intervalo de horário
+  - Segmentação demográfica
+  - Região
 
-* Heatmap: Visualização principal que representa intensidade de fluxo relacionada aos filtros selecionados.
+- **Indicadores (KPI Cards)**  
+  Apresentam métricas resumidas:
+  - Total de pessoas
+  - Pico de fluxo
+  - Local mais movimentado
 
-## Tela 3 — Gráficos para Análises e Comparações
+- **Mapa de calor (heatmap)**  
+  Representa a intensidade de fluxo de pessoas de forma agregada, variando conforme os filtros aplicados.
+
+---
+
+## Tela 3 - Análises Temporais e Demográficas
 
 <div style={{ textAlign: 'center' }}>
-  <p><strong>Figura 3 - Proposta de Visulização de Gráficos para Análises e Comparações</strong></p>
+  <p><strong>Figura 3 - Proposta de Visualização Analítica</strong></p>
   <img 
     src={useBaseUrl('/img/wireframe3.jpeg')} 
-    alt="Proposta de Visulização de Gráficos para Análises e Comparações" 
-    title="Proposta de Visulização de Gráficos para Análises e Comparações" 
+    alt="Análises e Comparações" 
+    title="Análises e Comparações" 
     style={{ maxWidth: '80%', height: 'auto' }}
   />
   <p>Fonte: Elaborado pelo grupo Café da Sophia (2026)</p>
 </div>
 
-&emsp;	O objetivo é permitir exploração analítica mais profunda sobre padrões temporais e perfil do público. Como componentes, possui:
+&emsp;Esta tela permite análises mais profundas, com foco em padrões temporais e perfil demográfico dos usuários.
 
-* Gráfico Tempo × Fluxo: O usuário define período e o gráfico exibe a variação de movimentação ao longo do tempo.
+### Componentes
 
-* Gráficos Demográficos: Distribuições por idade, gênero e classe social.
+- **Gráfico de Tempo × Fluxo**  
+  Exibe a variação do volume de pessoas ao longo do tempo, conforme o período selecionado.
 
-* Gráfico de Comparação: O usuário seleciona dimensões para comparação como regiões, períodos e perfis.
+- **Gráficos demográficos**  
+  Distribuições segmentadas por:
+  - Idade
+  - Gênero
+  - Classe social
+
+- **Gráfico de comparação**  
+  Permite ao usuário comparar diferentes dimensões, como:
+  - Regiões
+  - Períodos
+  - Perfis demográficos

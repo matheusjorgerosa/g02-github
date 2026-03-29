@@ -3,15 +3,16 @@ sidebar_position: 4
 title: Como rodar o projeto
 ---
 
-# Como rodar o projeto
 
-## Pré-requisitos
+## 1. Pré-requisitos
 
 - [Docker](https://www.docker.com/) e Docker Compose instalados
 - Arquivo `.env` configurado (veja [Variáveis de Ambiente](/docs/como-rodar/variaveis-de-ambiente))
 - Arquivo `service-account.json` da Service Account do GCP na raiz do projeto
 
-## Subindo com Docker Compose
+---
+
+## 2. Subindo com Docker Compose
 
 ```bash
 # Clone o repositório
@@ -30,7 +31,9 @@ A API estará disponível em `http://localhost:8080`.
 
 O Swagger UI pode ser acessado em `http://localhost:8080/docs/index.html`.
 
-## O que acontece no boot
+---
+
+## 3. O que acontece no boot
 
 1. Carrega as variáveis do `.env` via `godotenv`
 2. Inicializa o logger Uber Zap
@@ -39,7 +42,9 @@ O Swagger UI pode ser acessado em `http://localhost:8080/docs/index.html`.
 5. Inicializa o `GoogleMapsAdapter` com a chave da API
 6. Registra todos os middlewares, rotas e inicia o servidor na porta `8080`
 
-## Serviços do Docker Compose
+---
+
+## 4. Serviços do Docker Compose
 
 | Serviço | Imagem | Porta | Descrição |
 |---------|--------|-------|-----------|
@@ -48,7 +53,9 @@ O Swagger UI pode ser acessado em `http://localhost:8080/docs/index.html`.
 
 O serviço `app` aguarda o `db` estar saudável (`pg_isready`) antes de iniciar, graças ao `depends_on` com `condition: service_healthy`.
 
-## Rodando localmente sem Docker
+---
+
+## 5. Rodando localmente sem Docker
 
 ```bash
 # Instale as dependências
@@ -59,7 +66,9 @@ go mod download
 go run ./cmd/api/main.go
 ```
 
-## Regenerando o Swagger
+---
+
+## 6. Regenerando o Swagger
 
 Se você alterar anotações `// @...` nos handlers, regenere a documentação:
 
@@ -70,8 +79,9 @@ go install github.com/swaggo/swag/cmd/swag@latest
 # Gere os arquivos
 swag init -g cmd/api/main.go
 ```
+---
 
-## Credenciais de Acesso
+## 7. Credenciais de Acesso
 
 :::danger Atenção
 Para rodar o projeto, você vai precisar dos arquivos `.env` e `service-account.json`.

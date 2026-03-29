@@ -1,6 +1,6 @@
 ---
 title: Segurança da Aplicação
-sidebar_position: 2
+sidebar_position: 5
 ---
 
 ## 1. Introdução
@@ -26,7 +26,7 @@ sidebar_position: 2
 
 **Cloud Armor (WAF):** Implementação de regras de filtragem de IP (Allowlist) para permitir apenas o tráfego originado dos endereços IP conhecidos da Claro para evitar ataques de negação de serviço.
 
-## 2.3 Integridade e Segredos
+### 2.3 Integridade e Segredos
 
 **Criptografia TLS 1.2+**: Uso obrigatório de HTTPS para o GET e o POST na API da Claro e comunicação interna entre os serviços GCP.
 

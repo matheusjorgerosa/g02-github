@@ -5,7 +5,7 @@ sidebar_position: 2
 
 Este mock foi desenvolvido para permitir a realização de testes de integração, dado que não temos acesso à API oficial da Claro. Desse modo, ele simula as respostas reais da API com dados de fluxo diário. Nesse sentido, a API expõe um único endpoint REST que retorna dados de impressões, dispositivos únicos, distribuição por hora, faixa etária, gênero e classe social.
 
-## Estrutura do Projeto
+## 1. Estrutura do Projeto
 
 ```
 src/mock-api-claro/
@@ -15,15 +15,15 @@ src/mock-api-claro/
 ├── main.py                          # Aplicação FastAPI
 └── requirements.txt                 # Dependências Python
 ```
+---
 
+## 2. Guia de Execução Local
 
-## Guia de Execução Local
-
-### Pré-requisitos
+### 2.1 Pré-requisitos
 
 - Docker instalado
 
-### Passos
+### 2.2 Passo a Passo
 
 ```bash
 # 1. Fazer o build da imagem
@@ -35,7 +35,9 @@ docker run -p 8080:8080 mock-api-claro
 
 > A API ficará disponível em: `http://localhost:8080`
 
-## Deploy
+---
+
+## 3. Deploy
 
 - A API está hospedada no Google Cloud Run e já está disponível publicamente.
 
@@ -47,7 +49,8 @@ Segue a documentação atualizada considerando suporte a paginação via query p
 
 ---
 
-## Referência da API
+---
+## 4. Referência da API
 
 ### `GET /mock-api-claro`
 
