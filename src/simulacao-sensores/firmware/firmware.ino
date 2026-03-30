@@ -1,16 +1,21 @@
 #include <WiFi.h>         
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
+#include <time.h>
 #include "config.h"
 
 const char* ssid = WIFI_SSID;
 const char* password = WIFI_PASSWORD;
 const char* endpoint = API_ENDPOINT;
 
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = -3 * 3600; // UTC-3 (Brasília)
+const int   daylightOffset_sec = 0;
+
 int requestCount = 0;
 
 const float locations[][2] = {
-{-23.58334,  -46.686511},
+  {-23.58334,  -46.686511},
   {-23.62332,  -46.69964},
   {-23.5367702,-46.6543715},
   {-23.5376064,-46.6639499},
@@ -38,14 +43,25 @@ const float locations[][2] = {
   {-23.5178060,-46.6298068},
   {-23.5038534,-46.6340617},
 };
-const int locationCount = 10;
 
+const int locationCount = 10;
 const char* classesSociais[] = {"A", "B1", "B2", "C", "DE"};
 const int classesCount = 5;
+
+String getTimestamp() {
+  struct tm timeinfo;
+  if (!getLocalTime(&timeinfo)) {
+    return "1970-01-01T00:00:00";
+  }
+  char buf[20];
+  strftime(buf, sizeof(buf), "%Y-%m-%dT%H:%M:%S", &timeinfo);
+  return String(buf);
+}
 
 void setup() {
   Serial.begin(115200);
   randomSeed(analogRead(0));
+
   WiFi.begin(ssid, password);
   Serial.print("Conectando ao WiFi");
   while (WiFi.status() != WL_CONNECTED) {
@@ -53,6 +69,14 @@ void setup() {
     Serial.print(".");
   }
   Serial.println("\nConectado! IP: " + WiFi.localIP().toString());
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  Serial.print("Sincronizando NTP");
+  struct tm timeinfo;
+  while (!getLocalTime(&timeinfo)) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nHora sincronizada: " + getTimestamp());
 }
 
 void loop() {
@@ -61,14 +85,14 @@ void loop() {
     http.begin(endpoint);
     http.addHeader("Content-Type", "application/json");
 
-    int locIndex = random(0, locationCount);
+    int locIndex    = random(0, locationCount);
     float latitude  = locations[locIndex][0];
     float longitude = locations[locIndex][1];
-
-    int idade = random(18, 80);
+    int idade       = random(18, 80);
     int classeIndex = random(0, classesCount);
     const char* classeSocial = classesSociais[classeIndex];
     const char* genero = (random(0, 2) == 0) ? "M" : "F";
+    String timestamp = getTimestamp();
 
     StaticJsonDocument<256> doc;
     doc["latitude"]      = latitude;
@@ -76,6 +100,7 @@ void loop() {
     doc["idade"]         = idade;
     doc["classe_social"] = classeSocial;
     doc["genero"]        = genero;
+    doc["timestamp"]     = timestamp;
 
     String payload;
     serializeJson(doc, payload);
@@ -96,6 +121,4 @@ void loop() {
     Serial.println("WiFi desconectado, reconectando...");
     WiFi.reconnect();
   }
-
-  delay(200);
 }

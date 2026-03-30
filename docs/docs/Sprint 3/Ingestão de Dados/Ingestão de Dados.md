@@ -1,14 +1,13 @@
 ---
+title: Ingestão de Dados
 sidebar_position: 4
 ---
 
-# Infraestrutura de Ingestao de Dados
-
-## Visao Geral
+## 1. Visao Geral
 
 A infraestrutura de ingestão de dados compõe uma pipeline *event-driven* composta por três microsserviços independentes, Producer, Consumer e Transformer, que processam os dados em etapas. A arquitetura da pipeline de ingestão conta, ainda, com uma divisão em três camadas: raw, trusted e analytics, num padrão Data Lakehouse em formato Apache Iceberg. Após processamento, salvam-se os dados em BigQuery, para uso em consultas SQL e analíticas. Abaixo, explora-se em detalhes o funcionamento da pipeline ingestão.
 
-### Fluxo Completo
+### 1.1 Fluxo Completo
 
 O diagrama abaixo ilustra o fluxo de ponta a ponta, desde a requisição do cliente até o armazenamento final:
 
@@ -29,7 +28,7 @@ flowchart LR
 
 Existem dois modelos de execução distintos na pipeline. O Consumer opera por polling: é um job batch disparado pelo Cloud Scheduler a cada 1 minuto, que puxa mensagens acumuladas no Pub/Sub. Já o Transformer opera de forma event-driven: é acionado automaticamente pelo Eventarc sempre que um arquivo é criado no GCS (`object.finalized`), sem necessidade de polling. Essa distinção é intencional — o Consumer agrupa mensagens em lotes para otimizar escrita, enquanto o Transformer reage imediatamente a cada lote disponível.
 
-### Camadas do Data Lakehouse
+### 1.2 Camadas do Data Lakehouse
 
 | Camada | Local | Formato |
 |---|---|---|
@@ -39,9 +38,11 @@ Existem dois modelos de execução distintos na pipeline. O Consumer opera por p
 
 Como mencionado, o Data Lakehouse é dividido em três camadas: raw, trusted e analytics. A camada raw armazena os dados brutos, exatamente como recebidos. A camada trusted armazena os dados deduplicados, validados (source of truth). A camada analytics armazena os dados consolidados, prontos para uso em consultas SQL e analíticas.
 
-### Componentes em Detalhe
+---
 
-#### 1. Producer (Cloud Run Service)
+## 2. Componentes em Detalhe
+
+### 2.1 Producer (Cloud Run Service)
 
 Arquivo: `src/infra_ingestao/producer/main.go`
 
@@ -74,7 +75,7 @@ Lógica:
 
 ---
 
-#### 2. Consumer (Cloud Run Job)
+### 2.2 Consumer (Cloud Run Job)
 
 Arquivo: `src/infra_ingestao/consumer/main.go`
 
@@ -102,7 +103,7 @@ raw/
 
 ---
 
-#### 3. Transformer (Cloud Run Service)
+### 2.3 Transformer (Cloud Run Service)
 
 Arquivo: `src/infra_ingestao/transformer/main.py`
 
@@ -141,7 +142,7 @@ O Transformer remove duplicatas exatas comparando o conteúdo completo de cada r
 
 ---
 
-### Resiliência da Pipeline
+### 2.4 Resiliência da Pipeline
 
 A pipeline foi projetada para lidar com falhas em diferentes pontos sem perda de dados:
 
@@ -152,7 +153,7 @@ A pipeline foi projetada para lidar com falhas em diferentes pontos sem perda de
 
 ---
 
-### Service Accounts e IAM
+### 2.5 Service Accounts e IAM
 
 Cada componente tem uma service account dedicada seguindo o principio de menor privilégio:
 
@@ -164,15 +165,15 @@ Cada componente tem uma service account dedicada seguindo o principio de menor p
 
 ---
 
-## Catálogo Iceberg (Cloud SQL PostgreSQL)
+### 2.6 Catálogo Iceberg (Cloud SQL PostgreSQL)
 
 O Apache Iceberg usa um catálogo PostgreSQL hospedado no Cloud SQL para armazenar metadata das tabelas (localizacao dos arquivos Parquet, snapshots, schemas, etc). O Transformer usa uma classe customizada `CloudSqlCatalog` que herda de `SqlCatalog` do PyIceberg, adaptando-a para aceitar uma engine SQLAlchemy externa (necessaria para o Cloud SQL Connector).
 
 ---
 
-## Como Testar
+## 3. Como Testar
 
-### Enviando dados
+### 3.1 Enviando dados
 
 ```bash
 curl -X POST https://<API_GATEWAY_URL>/ingest \
@@ -186,7 +187,7 @@ curl -X POST https://<API_GATEWAY_URL>/ingest \
   }'
 ```
 
-### Executando o Consumer manualmente
+### 3.2 Executando o Consumer manualmente
 
 ```bash
 gcloud run jobs execute consumer \
@@ -194,7 +195,7 @@ gcloud run jobs execute consumer \
   --project=venus-m09
 ```
 
-### Consultando dados no BigQuery
+### 3.3 Consultando dados no BigQuery
 
 ```sql
 SELECT *
@@ -204,7 +205,7 @@ ORDER BY ingested_at DESC
 LIMIT 10;
 ```
 
-### Verificando logs
+### 3.4 Verificando logs
 
 ```bash
 # Producer

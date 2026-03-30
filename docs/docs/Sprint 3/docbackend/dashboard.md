@@ -3,11 +3,13 @@ sidebar_position: 3
 title: Backend Dashboard 
 ---
 
-# Endpoints — Dashboard (Flow)
+## 1. Endpoints - Dashboard (Flow)
 
 Todas as rotas abaixo ficam sob o grupo `/api/v1/flow` e exigem autenticação JWT (`user` ou `admin`).
 
-## Demonstração no Swagger
+---
+
+## 2. Demonstração no Swagger
 
 O vídeo abaixo mostra as chamadas POST para os endpoints do BigQuery no Swagger UI:
 
@@ -22,7 +24,7 @@ O vídeo abaixo mostra as chamadas POST para os endpoints do BigQuery no Swagger
 
 ---
 
-## Payload padrão (FilterPayload)
+## 3. Payload padrão (FilterPayload)
 
 Todos os endpoints recebem o mesmo formato de body:
 
@@ -51,7 +53,7 @@ O adapter do BigQuery expande automaticamente as faixas etárias em idades indiv
 
 ---
 
-## `POST /api/v1/flow/spatial`
+### `POST /api/v1/flow/spatial`
 
 Retorna pontos de latitude/longitude com volume de audiência para renderização de mapa de calor.
 
@@ -76,7 +78,7 @@ GROUP BY latitude, longitude
 
 ---
 
-## `POST /api/v1/flow/metrics`
+### `POST /api/v1/flow/metrics`
 
 Retorna o total de audiência e o fluxo de pessoas por hora nas últimas 24h.
 
@@ -103,7 +105,7 @@ GROUP BY hour ORDER BY hour ASC
 
 ---
 
-## `POST /api/v1/flow/ranking/neighborhoods`
+### `POST /api/v1/flow/ranking/neighborhoods`
 
 Retorna o ranking das ruas mais movimentadas. Usa geocodificação reversa (Google Maps API) para converter coordenadas em nomes de ruas reais.
 
@@ -131,7 +133,7 @@ O repositório consulta primeiro as coordenadas de maior volume no BigQuery e de
 
 ---
 
-## `POST /api/v1/flow/distribution/demographics`
+### `POST /api/v1/flow/distribution/demographics`
 
 Retorna a distribuição percentual e o volume absoluto por Gênero e Classe Social.
 
@@ -163,7 +165,7 @@ GROUP BY category
 
 ---
 
-## Respostas de erro (todos os endpoints)
+## 4.  Respostas de erro (todos os endpoints)
 
 | Status | Causa |
 |--------|-------|
@@ -172,12 +174,13 @@ GROUP BY category
 | `500` | Erro na consulta ao BigQuery |
 
 
+---
 
-## BigQuery
+## 5. BigQuery
 
 O BigQuery é o data warehouse onde ficam os dados de audiência. A API consome a tabela `venus-m09.trusted.ingestao`.
 
-### Inicialização
+### 5.1 Inicialização
 
 A conexão é feita em `internal/flow/config/bigquery.go` durante o boot da aplicação:
 
@@ -189,7 +192,7 @@ O `projectID` é lido da variável de ambiente `GCP_PROJECT`. Se não estiver de
 
 A autenticação com o GCP é feita via **Service Account**. O arquivo `service-account.json` é montado no container em `/root/service-account.json` e referenciado pela variável `GOOGLE_APPLICATION_CREDENTIALS`.
 
-### Arquitetura de acesso (camadas)
+### 5.2 Arquitetura de acesso (camadas)
 
 ```
 Handler
@@ -206,7 +209,7 @@ type DBEngine interface {
 }
 ```
 
-### Queries parametrizadas
+### 5.3 Queries parametrizadas
 
 Todas as queries usam **parâmetros nomeados** (`@ages`, `@genders`, `@classes`) para evitar SQL injection:
 
@@ -218,7 +221,7 @@ q.Parameters = []bigquery.QueryParameter{
 }
 ```
 
-### Tabela: `venus-m09.trusted.ingestao`
+### 5.4 Tabela: `venus-m09.trusted.ingestao`
 
 | Coluna | Tipo | Descrição |
 |--------|------|-----------|
@@ -231,11 +234,11 @@ q.Parameters = []bigquery.QueryParameter{
 
 ---
 
-## Google Maps API
+## 6. Google Maps API
 
 Usada exclusivamente para **geocodificação reversa** no endpoint de ranking de ruas.
 
-### Inicialização
+### 6.1 Inicialização
 
 ```go
 geoCoder, err := flowrepo.NewGoogleMapsAdapter()
@@ -244,7 +247,7 @@ geoCoder, err := flowrepo.NewGoogleMapsAdapter()
 A chave da API é lida da variável de ambiente `GOOGLE_MAPS_API_KEY`.
 
 
-### Configuração no Docker
+### 6.2 Configuração no Docker
 
 ```yaml
 environment:

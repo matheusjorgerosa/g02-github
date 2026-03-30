@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"net/http"
-	"github.com/gin-gonic/gin"
 	"backend-web/internal/flow/models"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // HandleNeighborhoodRanking godoc
@@ -25,13 +26,14 @@ func (h *FlowHandler) HandleNeighborhoodRanking(c *gin.Context) {
 		return
 	}
 	limit := req.Limit
-	if limit <= 0 { limit = 10 }
+	if limit <= 0 {
+		limit = 10
+	}
 
-	ranking, err := h.repo.GetNeighborhoodRanking(c.Request.Context(), req.Filters, limit)
+	ranking, err := h.repo.GetNeighborhoodRanking(c.Request.Context(), *req.Filters, limit)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"ranking": ranking})
 }
-

@@ -113,3 +113,39 @@ Backend: http://localhost:8080
 
 Swagger: http://localhost:8080/docs/index.html
 ```
+
+## Como rodar os testes de integração
+
+### 1. Pré-requisitos
+
+```bash
+export GOOGLE_APPLICATION_CREDENTIALS=/caminho/para/service-account.json
+export TEST_USER_EMAIL=
+export TEST_USER_PASSWORD=
+export JWT_SECRET=
+export GOOGLE_MAPS_API_KEY=
+```
+
+### 2. Como rodar
+
+Rode esses comandos para rodar todos os testes de integração
+
+```bash
+
+cd src/backend-web/tests
+make test-e2e
+
+```
+
+Rode esses comandos para rodar os testes de integração por endpoint
+
+```bash
+
+cd src/backend-web/tests
+
+make test-e2e-spatial
+make test-e2e-metrics
+make test-e2e-ranking
+make test-e2e-demographics
+
+```

@@ -16,6 +16,8 @@ import MapView from './components/MapView';
 import StatsGrid from './components/StatsGrid';
 import FilterPanel from './components/FilterPanel';
 import CampaignsPage from './components/CampaignsPage';
+import AdminUsersPage from './components/AdminUsersPage';
+import AdminLogsPage from './components/AdminLogsPage';
 
 const COOKIE_KEY = 'venus-settings';
 
@@ -226,6 +228,10 @@ function App() {
           <SettingsPanel settings={settings} updateSetting={updateSetting} resetSettings={resetSettings} t={t} />
         ) : activeTab === 'campaigns' ? (
           <CampaignsPage t={t} language={settings.language} />
+        ) : activeTab === 'users' ? (
+          <AdminUsersPage t={t} />
+        ) : activeTab === 'logs' ? (
+          <AdminLogsPage t={t} />
         ) : (
           <div className="venus-content-layout">
             <div className="venus-left-col">

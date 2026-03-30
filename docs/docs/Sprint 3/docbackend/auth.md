@@ -3,7 +3,7 @@ sidebar_position: 2
 title: Backend Users
 ---
 
-## Endpoints - Autenticação e Usuários
+## 1. Endpoints - Autenticação e Usuários
 
 O vídeo abaixo mostra o fluxo de login, cadastro, exclusão e atualização de usuários direto no Swagger UI:
 <iframe
@@ -15,7 +15,9 @@ O vídeo abaixo mostra o fluxo de login, cadastro, exclusão e atualização de 
   allowFullScreen
 />
 
-## Rotas públicas
+---
+
+## 2. Rotas públicas
 
 Não exigem autenticação.
 
@@ -59,7 +61,7 @@ Verifica se a API está no ar.
 
 ---
 
-## Rotas de admin
+## 3. Rotas de admin
 
 Todas exigem `Authorization: Bearer <token>` com role `admin`.
 
@@ -125,7 +127,7 @@ Remove um usuário (soft delete via GORM + `is_active = false`). A operação ro
 
 ---
 
-## Model: User
+## 4. Model: User
 
 ```go
 type User struct {

@@ -25,7 +25,7 @@ func TestHandleDemographics(t *testing.T) {
 		{
 			name: "Sucesso - Retorna demografia corretamente",
 			payload: models.DataRequest{
-				Filters: models.FilterPayload{AgeGroups: []string{"18-24"}},
+				Filters: &models.FilterPayload{AgeGroups: []string{"18-24"}},
 			},
 			mockSetup: func(m *MockFlowRepository) {
 				m.MockGetDemographics = func(ctx context.Context, filters models.FilterPayload) (models.DemographicsResponse, error) {

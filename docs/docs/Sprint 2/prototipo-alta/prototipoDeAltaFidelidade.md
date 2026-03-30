@@ -5,7 +5,7 @@ sidebar_position: 2
 
 import useBaseUrl from '@docusaurus/useBaseUrl';
 
-# Protótipo de Alta Fidelidade
+## 1. Protótipo de Alta Fidelidade
 
 <strong>Link para o Figma:</strong> https://www.figma.com/design/uNfjpekxwn3LItT3kl8jGv/Prot%C3%B3tipo-de-alta-fidelidade?node-id=0-1&t=Omf12hkr1uNGKtI0-1
 
@@ -20,9 +20,10 @@ O protótipo cobre os seguintes fluxos principais:
 5. Aplicação de filtros demográficos (idade, gênero, classe social) e de visualização (mapa de calor, hexbins) para análise dos dados
 6. Visualização de tela de performance para campanhas ativas (funcionalidade futura)
 
-## Telas do Protótipo
+---
+## 2. Telas do Protótipo
 
-### 1. Login
+### 2.1 Login
 
 <div style={{ textAlign: 'center' }}>
   <p><strong>Figura 1 - Tela inicial de Login</strong></p>
@@ -37,7 +38,7 @@ O protótipo cobre os seguintes fluxos principais:
 
 <div style={{marginBottom: '1.5rem'}}>Tela inicial para autenticação do usuário, garantindo acesso seguro à plataforma. O design é simples e objetivo, focando na experiência rápida de entrada.</div>
 
-### 2. Dashboard Inicial (Mapa, Filtros e Seleção de Pontos)
+### 2.2 Dashboard Inicial (Mapa, Filtros e Seleção de Pontos)
 
 <div style={{ textAlign: 'center' }}>
   <p><strong>Figura 2 - Tela de visualização de dados</strong></p>
@@ -52,7 +53,7 @@ O protótipo cobre os seguintes fluxos principais:
 
 <div style={{marginBottom: '1.5rem'}}>Esta é a tela central da plataforma. O usuário visualiza um mapa interativo, podendo aplicar filtros demográficos (idade, gênero, classe social) e escolher o tipo de visualização (mapa de calor, hexbins). Ao clicar em pontos do mapa, pode selecionar locais para sua campanha e visualizar indicadores de performance do local, como fluxo estimado de pessoas e perfil do público.</div>
 
-### 3. Suas Campanhas
+### 2.3 Suas Campanhas
 
 <div style={{ textAlign: 'center' }}>
   <p><strong>Figura 3 - Tela de visualização de campanhas</strong></p>
@@ -67,7 +68,7 @@ O protótipo cobre os seguintes fluxos principais:
 
 <div style={{marginBottom: '1.5rem'}}>Tela dedicada à gestão das campanhas do usuário. Exibe uma lista com todas as campanhas cadastradas, destacando o status de cada uma (ativa, aguardando seleção de local, finalizada). Permite acessar detalhes, editar ou excluir campanhas, além de identificar rapidamente quais precisam de ação.</div>
 
-### 4. Popup de Criar Campanha
+### 2.4 Popup de Criar Campanha
 
 <div style={{ textAlign: 'center' }}>
   <p><strong>Figura 4 - Popup de Criar Campanha</strong></p>
@@ -82,7 +83,8 @@ O protótipo cobre os seguintes fluxos principais:
 
 <div style={{marginBottom: '1.5rem'}}>Ao clicar para criar uma nova campanha, um popup é exibido solicitando informações essenciais: nome, descrição e público-alvo. Após o cadastro, o usuário é direcionado ao dashboard para selecionar os locais no mapa. Se o usuário clicar em uma campanha existente, é levado ao dashboard com os filtros e dados daquela campanha aplicados automaticamente.</div>
 
-## Conclusão
+---
+## 3. Conclusão
 
 O protótipo de alta fidelidade foi fundamental para validar fluxos, testar a experiência do usuário e alinhar as funcionalidades com os requisitos do projeto. Ele detalha cada etapa da jornada do usuário, desde o login até a gestão e análise de campanhas, garantindo que a plataforma seja intuitiva, eficiente e atenda às necessidades do público-alvo. Além disso, o protótipo serve como referência visual e funcional para o desenvolvimento do produto final, facilitando a comunicação entre equipe técnica, stakeholders e usuários, e assegurando que os requisitos funcionais e não funcionais sejam contemplados desde as fases iniciais do projeto.
 
