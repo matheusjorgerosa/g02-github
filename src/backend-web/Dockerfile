@@ -28,6 +28,7 @@ COPY --from=builder /app/main .
 # Copia o .env 
 COPY --from=builder /app/.env . 
 
+COPY service-account.json ./service-account.json
 # Porta que o Gin vai rodar
 EXPOSE 8080
 
