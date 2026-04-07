@@ -43,7 +43,6 @@ service-account.json
 .vscode/
 .idea/
 
-logs/
 *.exe
 *.bin
 
