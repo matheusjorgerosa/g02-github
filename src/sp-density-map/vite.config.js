@@ -25,4 +25,21 @@ export default defineConfig({
       '/health': 'http://localhost:8080',
     },
   },
+  build: {
+    chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('deck.gl') || id.includes('maplibre-gl')) {
+              return 'maps';
+            }
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'vendor';
+            }
+          }
+        }
+      }
+    }
+  }
 })
