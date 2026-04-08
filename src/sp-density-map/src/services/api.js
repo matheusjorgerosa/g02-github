@@ -1,6 +1,7 @@
 // Camada de serviço para comunicação com o backend
 
 const TOKEN_KEY = 'venus-token';
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY);
@@ -20,7 +21,7 @@ export function isAuthenticated() {
 
 // Faz login e salva o token
 export async function apiLogin(email, password) {
-  const res = await fetch('/login', {
+  const res = await fetch(`${API_URL}/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -38,7 +39,7 @@ export async function apiLogin(email, password) {
 
 // Faz cadastro público
 export async function apiSignup(name, email, password) {
-  const res = await fetch('/signup', {
+  const res = await fetch(`${API_URL}/signup`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password }),
@@ -56,7 +57,7 @@ export async function apiSignup(name, email, password) {
 export async function apiFetch(path, options = {}) {
   const token = getToken();
 
-  const res = await fetch(path, {
+  const res = await fetch(`${API_URL}${path}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
