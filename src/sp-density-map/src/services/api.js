@@ -19,6 +19,27 @@ export function isAuthenticated() {
   return !!getToken();
 }
 
+// Tratamento de erros seguro para o caso do servidor retornar HTML (ex: Fallback do SPA)
+async function parseResponse(res, defaultErrorMsg) {
+  if (!res.ok) {
+    let errorMsg = defaultErrorMsg;
+    const contentType = res.headers.get('content-type');
+    if (contentType && contentType.includes('application/json')) {
+      const data = await res.json().catch(() => ({}));
+      errorMsg = data.error || errorMsg;
+    }
+    throw new Error(errorMsg);
+  }
+
+  const contentType = res.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    // Se o backend retornar 200 OK mas não for JSON (ex: index.html do front), é um erro de rota
+    throw new Error('Erro de conexão com a API: O servidor não retornou dados válidos.');
+  }
+
+  return res.json();
+}
+
 // Faz login e salva o token
 export async function apiLogin(email, password) {
   const res = await fetch(`${API_URL}/login`, {
@@ -27,13 +48,13 @@ export async function apiLogin(email, password) {
     body: JSON.stringify({ email, password }),
   });
 
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || 'Erro ao fazer login');
+  const data = await parseResponse(res, 'Erro ao fazer login');
+  
+  if (data.token) {
+    setToken(data.token);
+  } else {
+    throw new Error('Token não recebido');
   }
-
-  const data = await res.json();
-  setToken(data.token);
   return data;
 }
 
@@ -45,12 +66,7 @@ export async function apiSignup(name, email, password) {
     body: JSON.stringify({ name, email, password }),
   });
 
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}));
-    throw new Error(data.error || 'Erro ao fazer cadastro');
-  }
-
-  return res.json();
+  return parseResponse(res, 'Erro ao fazer cadastro');
 }
 
 // Fetch genérico que injeta o token JWT automaticamente
