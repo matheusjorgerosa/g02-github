@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"strings"
 
 	"backend-web/internal/logs"
 	"backend-web/internal/platform/database"
@@ -87,9 +88,24 @@ func main() {
 	r := gin.New()
 	r.Use(gin.Recovery()) // Adicionado para sua API não morrer se der um panic no código
 
-	// CORS para desenvolvimento
+	// CORS - origins configuráveis via env var ALLOWED_ORIGINS (lista separada por vírgula).
+	// Fallback inclui localhost (dev) e o front em produção no Render.
+	allowedOrigins := []string{
+		"http://localhost:5173",
+		"https://g02-github-front.onrender.com",
+	}
+	if envOrigins := os.Getenv("ALLOWED_ORIGINS"); envOrigins != "" {
+		parts := strings.Split(envOrigins, ",")
+		allowedOrigins = allowedOrigins[:0]
+		for _, o := range parts {
+			if trimmed := strings.TrimSpace(o); trimmed != "" {
+				allowedOrigins = append(allowedOrigins, trimmed)
+			}
+		}
+	}
+
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173"},
+		AllowOrigins:     allowedOrigins,
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
